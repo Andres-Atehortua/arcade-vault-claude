@@ -23,6 +23,10 @@ No test runner is configured yet.
 
 Node version is pinned via `.nvmrc` (26.5).
 
+## Skills
+
+Use always /frontend-design to design the user interface.
+
 ## Architecture
 
 - App Router (`app/`), TypeScript, path alias `@/*` -> project root (see `tsconfig.json`).
