@@ -27,6 +27,10 @@ Node version is pinned via `.nvmrc` (26.5).
 
 Use always /frontend-design to design the user interface.
 
+## Code conventions
+
+- Always use arrow functions, never the `function` keyword — including React components, helpers and Next.js special exports. Default-export via `const Page = () => {...}; export default Page;` and declare `export const generateStaticParams = async () => {...}`.
+
 ## Architecture
 
 - App Router (`app/`), TypeScript, path alias `@/*` -> project root (see `tsconfig.json`).

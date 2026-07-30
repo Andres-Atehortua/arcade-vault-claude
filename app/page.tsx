@@ -1,16 +1,19 @@
-export default function Home() {
+import LibraryFilters from './components/library-filters';
+import { GAMES } from './data/games';
+
+const Home = () => {
   return (
-    <main className='av-main'>
+    <div className='fade-in'>
       <section className='av-hero'>
-        <h1>Arcade Vault</h1>
-        <p className='sub'>
-          Inserta una moneda <span className='blink'>_</span>
-        </p>
-        <div className='detail-actions' style={{ justifyContent: 'center' }}>
-          <button className='btn lg pulse'>Ver biblioteca</button>
-          <button className='btn lg magenta'>Salón de la fama</button>
+        <h1 className='flicker'>ARCADE VAULT</h1>
+        <div className='sub'>
+          INSERTA UNA MONEDA PARA JUGAR <span className='blink'>_</span>
         </div>
       </section>
-    </main>
+
+      <LibraryFilters games={GAMES} />
+    </div>
   );
-}
+};
+
+export default Home;
