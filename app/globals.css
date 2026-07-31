@@ -228,8 +228,7 @@ a {
 .av-nav .logo-mark {
   width: 28px;
   height: 28px;
-  background:
-    linear-gradient(45deg, var(--magenta) 0 50%, transparent 50%), linear-gradient(-45deg, var(--cyan) 0 50%, transparent 50%);
+  background: linear-gradient(45deg, var(--magenta) 0 50%, transparent 50%), linear-gradient(-45deg, var(--cyan) 0 50%, transparent 50%);
   background-blend-mode: screen;
   box-shadow:
     0 0 12px rgba(0, 245, 255, 0.55),
@@ -836,8 +835,7 @@ a {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 22% 30%, #888 0 18px, transparent 19px),
-    radial-gradient(circle at 75% 60%, #aaa 0 26px, transparent 27px),
+    radial-gradient(circle at 22% 30%, #888 0 18px, transparent 19px), radial-gradient(circle at 75% 60%, #aaa 0 26px, transparent 27px),
     radial-gradient(circle at 50% 80%, #777 0 14px, transparent 15px),
     radial-gradient(circle at 88% 22%, var(--cyan) 0 2px, transparent 3px),
     radial-gradient(circle at 12% 70%, var(--cyan) 0 2px, transparent 3px),
@@ -1393,8 +1391,7 @@ a {
   width: 56px;
   height: 56px;
   margin: 0 auto 12px;
-  background:
-    linear-gradient(45deg, var(--magenta) 0 50%, transparent 50%), linear-gradient(-45deg, var(--cyan) 0 50%, transparent 50%);
+  background: linear-gradient(45deg, var(--magenta) 0 50%, transparent 50%), linear-gradient(-45deg, var(--cyan) 0 50%, transparent 50%);
   background-blend-mode: screen;
   box-shadow:
     0 0 16px rgba(0, 245, 255, 0.55),

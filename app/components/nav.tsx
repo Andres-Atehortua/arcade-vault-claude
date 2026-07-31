@@ -19,74 +19,67 @@ const Nav = () => {
 
   return (
     <>
-      <nav className='av-nav'>
-        <Link className='logo' href='/' onClick={close}>
-          <div className='logo-mark' />
-          <div className='logo-text neon-cyan'>
-            ARCADE <span className='neon-magenta'>VAULT</span>
+      <nav className="av-nav">
+        <Link className="logo" href="/" onClick={close}>
+          <div className="logo-mark" />
+          <div className="logo-text neon-cyan">
+            ARCADE <span className="neon-magenta">VAULT</span>
           </div>
         </Link>
-        <div className='links'>
-          <Link className={isHome ? 'active' : ''} href='/'>
+        <div className="links">
+          <Link className={isHome ? 'active' : ''} href="/">
             Inicio
           </Link>
-          <Link className={isLibrary ? 'active' : ''} href='/biblioteca'>
+          <Link className={isLibrary ? 'active' : ''} href="/biblioteca">
             Biblioteca
           </Link>
-          <Link className={isHall ? 'active' : ''} href='/salon'>
+          <Link className={isHall ? 'active' : ''} href="/salon">
             Salón de la Fama
           </Link>
-          <Link className={isAbout ? 'active' : ''} href='/acerca-de'>
+          <Link className={isAbout ? 'active' : ''} href="/acerca-de">
             Acerca de
           </Link>
         </div>
-        <div className='spacer' />
-        <div className='coin-counter'>
-          <span className='coin' />
+        <div className="spacer" />
+        <div className="coin-counter">
+          <span className="coin" />
           <span>CRÉDITOS · 03</span>
         </div>
-        <Link className='btn auth-btn' href='/auth'>
+        <Link className="btn auth-btn" href="/auth">
           Iniciar Sesión
         </Link>
-        <button
-          className='btn ghost hamburger'
-          onClick={() => setOpen(true)}
-          aria-label='Menú'
-        >
+        <button className="btn ghost hamburger" onClick={() => setOpen(true)} aria-label="Menú">
           ≡
         </button>
       </nav>
 
-      <div
-        className={'av-mobile-backdrop' + (open ? ' open' : '')}
-        onClick={close}
-      />
+      <div className={'av-mobile-backdrop' + (open ? ' open' : '')} onClick={close} />
       <aside className={'av-mobile-panel' + (open ? ' open' : '')}>
-        <div className='pixel neon-cyan' style={{ fontSize: 11, marginBottom: 16 }}>
+        <div className="pixel neon-cyan" style={{ fontSize: 11, marginBottom: 16 }}>
           MENÚ
         </div>
-        <Link className={isHome ? 'active' : ''} href='/' onClick={close}>
+        <Link className={isHome ? 'active' : ''} href="/" onClick={close}>
           Inicio
         </Link>
-        <Link className={isLibrary ? 'active' : ''} href='/biblioteca' onClick={close}>
+        <Link className={isLibrary ? 'active' : ''} href="/biblioteca" onClick={close}>
           Biblioteca
         </Link>
-        <Link className={isHall ? 'active' : ''} href='/salon' onClick={close}>
+        <Link className={isHall ? 'active' : ''} href="/salon" onClick={close}>
           Salón de la Fama
         </Link>
-        <Link className={isAbout ? 'active' : ''} href='/acerca-de' onClick={close}>
+        <Link className={isAbout ? 'active' : ''} href="/acerca-de" onClick={close}>
           Acerca de
         </Link>
-        <Link className={isAuth ? 'active' : ''} href='/auth' onClick={close}>
+        <Link className={isAuth ? 'active' : ''} href="/auth" onClick={close}>
           Iniciar Sesión
         </Link>
         <div style={{ flex: 1 }} />
         <div
-          className='pixel'
+          className="pixel"
           style={{
             fontSize: 9,
             color: 'var(--ink-faint)',
-            letterSpacing: '0.16em'
+            letterSpacing: '0.16em',
           }}
         >
           CRÉDITOS · 03

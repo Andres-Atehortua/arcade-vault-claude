@@ -114,5 +114,4 @@ export const GAMES: Game[] = [
 
 export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'VERSUS'] as const;
 
-export const getGameById = (id: string): Game | undefined =>
-  GAMES.find((game) => game.id === id);
+export const getGameById = (id: string): Game | undefined => GAMES.find((game) => game.id === id);

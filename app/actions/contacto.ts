@@ -15,9 +15,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DESTINATARIO = 'andres.lopez.ate@gmail.com';
 const REMITENTE = 'onboarding@resend.dev';
 
-export const enviarContacto = async (
-  payload: ContactoPayload
-): Promise<ContactoResult> => {
+export const enviarContacto = async (payload: ContactoPayload): Promise<ContactoResult> => {
   const { name, email, message, honeypot } = payload;
 
   if (honeypot) {
@@ -29,7 +27,10 @@ export const enviarContacto = async (
   }
 
   if (!EMAIL_REGEX.test(email)) {
-    return { ok: false, error: 'El correo electrónico no tiene un formato válido.' };
+    return {
+      ok: false,
+      error: 'El correo electrónico no tiene un formato válido.',
+    };
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -47,7 +48,10 @@ export const enviarContacto = async (
   });
 
   if (error) {
-    return { ok: false, error: 'No se pudo enviar el mensaje. Intenta nuevamente.' };
+    return {
+      ok: false,
+      error: 'No se pudo enviar el mensaje. Intenta nuevamente.',
+    };
   }
 
   return { ok: true };

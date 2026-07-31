@@ -48,7 +48,7 @@ const ContactForm = () => {
       name: form.name.trim(),
       email: form.email.trim(),
       message: form.message.trim(),
-      honeypot
+      honeypot,
     });
 
     if (result.ok) {
@@ -72,26 +72,25 @@ const ContactForm = () => {
 
   if (status === 'success') {
     return (
-      <div className='terminal-success'>
-        <div className='term-bar'>
-          <span className='dot r' />
-          <span className='dot y' />
-          <span className='dot g' />
-          <span className='term-title'>VAULT-OS // TERMINAL</span>
+      <div className="terminal-success">
+        <div className="term-bar">
+          <span className="dot r" />
+          <span className="dot y" />
+          <span className="dot g" />
+          <span className="term-title">VAULT-OS // TERMINAL</span>
         </div>
-        <div className='term-body'>
-          <div className='line'>
-            <span className='prompt'>vault@arcade:~$</span> ./send_message --to=team
+        <div className="term-body">
+          <div className="line">
+            <span className="prompt">vault@arcade:~$</span> ./send_message --to=team
           </div>
-          <div className='line dim'>[OK] Conectando con servidor…</div>
-          <div className='line dim'>[OK] Validando contenido…</div>
-          <div className='line dim'>[OK] Transmitiendo paquete…</div>
-          <div className='line success'>
-            &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, {sentName.toUpperCase()}.
-            <span className='caret'>_</span>
+          <div className="line dim">[OK] Conectando con servidor…</div>
+          <div className="line dim">[OK] Validando contenido…</div>
+          <div className="line dim">[OK] Transmitiendo paquete…</div>
+          <div className="line success">
+            &gt; MENSAJE RECIBIDO. TE RESPONDEREMOS PRONTO. GRACIAS, {sentName.toUpperCase()}.<span className="caret">_</span>
           </div>
           <div style={{ marginTop: 18 }}>
-            <button className='btn ghost' type='button' onClick={sendAnother}>
+            <button className="btn ghost" type="button" onClick={sendAnother}>
               ENVIAR OTRO MENSAJE
             </button>
           </div>
@@ -102,10 +101,10 @@ const ContactForm = () => {
 
   if (status === 'error') {
     return (
-      <div className='contact-error'>
-        <div className='contact-error-title pixel'>▸ ENVÍO FALLIDO</div>
-        <p className='contact-error-msg'>{errorMsg}</p>
-        <button className='btn ghost' type='button' onClick={retry}>
+      <div className="contact-error">
+        <div className="contact-error-title pixel">▸ ENVÍO FALLIDO</div>
+        <p className="contact-error-msg">{errorMsg}</p>
+        <button className="btn ghost" type="button" onClick={retry}>
           REINTENTAR
         </button>
       </div>
@@ -114,44 +113,32 @@ const ContactForm = () => {
 
   return (
     <form className={'contact-form' + (shake ? ' shake' : '')} onSubmit={onSubmit}>
-      <div className='field'>
-        <label htmlFor='contact-name'>NOMBRE</label>
-        <input
-          id='contact-name'
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          placeholder='px_kai'
-        />
+      <div className="field">
+        <label htmlFor="contact-name">NOMBRE</label>
+        <input id="contact-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="px_kai" />
       </div>
-      <div className='field'>
-        <label htmlFor='contact-email'>CORREO ELECTRÓNICO</label>
+      <div className="field">
+        <label htmlFor="contact-email">CORREO ELECTRÓNICO</label>
         <input
-          id='contact-email'
-          type='email'
+          id="contact-email"
+          type="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
-          placeholder='jugador@vault.gg'
+          placeholder="jugador@vault.gg"
         />
       </div>
-      <div className='field'>
-        <label htmlFor='contact-message'>MENSAJE</label>
+      <div className="field">
+        <label htmlFor="contact-message">MENSAJE</label>
         <textarea
-          id='contact-message'
+          id="contact-message"
           rows={5}
           value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
-          placeholder='Cuéntanos qué tienes en mente…'
+          placeholder="Cuéntanos qué tienes en mente…"
         />
       </div>
-      <input
-        type='text'
-        name='website'
-        className='hp-field'
-        tabIndex={-1}
-        autoComplete='off'
-        aria-hidden='true'
-      />
-      <button className='btn xl press' type='submit' style={{ width: '100%' }} disabled={status === 'loading'}>
+      <input type="text" name="website" className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <button className="btn xl press" type="submit" style={{ width: '100%' }} disabled={status === 'loading'}>
         {status === 'loading' ? '▶  ENVIANDO…' : '▶  ENVIAR MENSAJE'}
       </button>
     </form>

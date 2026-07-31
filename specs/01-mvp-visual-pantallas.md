@@ -37,18 +37,18 @@ export type GameCategory = 'ARCADE' | 'PUZZLE' | 'SHOOTER' | 'VERSUS';
 export type GameAccent = 'cyan' | 'magenta' | 'yellow' | 'green';
 
 export interface Game {
-  id: string;          // slug de la URL: /juegos/bloque-buster
-  title: string;       // en mayúsculas, como se muestra
-  short: string;       // una línea, para la tarjeta de la biblioteca
-  long: string;        // párrafo, para la ficha de detalle
+  id: string; // slug de la URL: /juegos/bloque-buster
+  title: string; // en mayúsculas, como se muestra
+  short: string; // una línea, para la tarjeta de la biblioteca
+  long: string; // párrafo, para la ficha de detalle
   cat: GameCategory;
-  cover: string;       // clase CSS del degradado de portada, p. ej. "cover-bricks"
-  color: GameAccent;   // acento del botón JUGAR
-  best: number;        // mejor puntuación global
-  plays: string;       // ya formateado: "12.4K"
+  cover: string; // clase CSS del degradado de portada, p. ej. "cover-bricks"
+  color: GameAccent; // acento del botón JUGAR
+  best: number; // mejor puntuación global
+  plays: string; // ya formateado: "12.4K"
 }
 
-export const GAMES: Game[];                      // los 8 juegos del prototipo
+export const GAMES: Game[]; // los 8 juegos del prototipo
 export const CATS: readonly ['TODOS', ...GameCategory[]];
 export function getGameById(id: string): Game | undefined;
 ```
@@ -58,12 +58,12 @@ export function getGameById(id: string): Game | undefined;
 ```ts
 export interface ScoreRow {
   rank: number;
-  name: string;   // alias del jugador, p. ej. "PX_KAI"
+  name: string; // alias del jugador, p. ej. "PX_KAI"
   score: number;
-  date: string;   // "DD/MM/YYYY", ya formateado
+  date: string; // "DD/MM/YYYY", ya formateado
 }
 
-export const PLAYERS: readonly string[];         // los 18 alias del prototipo
+export const PLAYERS: readonly string[]; // los 18 alias del prototipo
 export function seededScores(seed: number, count?: number): ScoreRow[];
 ```
 
@@ -148,14 +148,14 @@ Nota sobre el paso 6: el prototipo abre el detalle desde la tarjeta con un `onCl
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| Next 16 cambió la firma de `params` en rutas dinámicas respecto a lo conocido (ahora es un `Promise`). Un port hecho de memoria falla en build. | Paso 0 del plan: leer `node_modules/next/dist/docs/01-app/` antes de escribir la primera ruta dinámica. |
-| El efecto tilt de `GameCard` escribe en `el.style.transform` directamente. Si el componente se marca por error como Server Component, el build rompe. | `app/components/game-card.tsx` lleva `'use client'` explícito y no exporta nada que un Server Component pueda renderizar sin él. |
+| Riesgo                                                                                                                                                  | Mitigación                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Next 16 cambió la firma de `params` en rutas dinámicas respecto a lo conocido (ahora es un `Promise`). Un port hecho de memoria falla en build.         | Paso 0 del plan: leer `node_modules/next/dist/docs/01-app/` antes de escribir la primera ruta dinámica.                                                |
+| El efecto tilt de `GameCard` escribe en `el.style.transform` directamente. Si el componente se marca por error como Server Component, el build rompe.   | `app/components/game-card.tsx` lleva `'use client'` explícito y no exporta nada que un Server Component pueda renderizar sin él.                       |
 | `seededScores` se ejecuta en servidor (ficha de detalle) y en cliente (salón). Cualquier dependencia de `Date.now()` o del locale rompe la hidratación. | La función solo depende del `seed`. Las fechas vienen precalculadas dentro del propio LCG y el formato numérico se fija con `toLocaleString('es-ES')`. |
-| `app/globals.css` fue portado antes de existir los componentes. Puede faltar alguna clase del prototipo o sobrar otra. | Paso 12: repaso de clases usadas contra las definidas, añadiendo solo lo que falte y sin tocar lo existente. |
-| Una carpeta `app/data/` dentro del directorio de rutas puede confundirse con un segmento de ruta. | No contiene `page.tsx` ni `route.ts`, así que Next no genera ninguna ruta. Documentado en la sección de modelo de datos. |
-| La pantalla estática de juego puede leerse como un bug ("el juego no arranca"). | La barra inferior del CRT y el HUD deshabilitado comunican el estado; el texto exacto se decide durante la implementación con `/frontend-design`. |
+| `app/globals.css` fue portado antes de existir los componentes. Puede faltar alguna clase del prototipo o sobrar otra.                                  | Paso 12: repaso de clases usadas contra las definidas, añadiendo solo lo que falte y sin tocar lo existente.                                           |
+| Una carpeta `app/data/` dentro del directorio de rutas puede confundirse con un segmento de ruta.                                                       | No contiene `page.tsx` ni `route.ts`, así que Next no genera ninguna ruta. Documentado en la sección de modelo de datos.                               |
+| La pantalla estática de juego puede leerse como un bug ("el juego no arranca").                                                                         | La barra inferior del CRT y el HUD deshabilitado comunican el estado; el texto exacto se decide durante la implementación con `/frontend-design`.      |
 
 ## Lo que **no** entra en esta spec
 
