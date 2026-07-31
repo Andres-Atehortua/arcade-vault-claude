@@ -22,7 +22,7 @@
 **Fuera de alcance (para specs futuras):**
 
 - Autenticación real, login social (Google/GitHub) — no aplica aquí, es de `/auth`.
-- Persistencia de mensajes de contacto en base de datos o backoffice para leerlos: el correo *es* el almacenamiento.
+- Persistencia de mensajes de contacto en base de datos o backoffice para leerlos: el correo _es_ el almacenamiento.
 - Rate limiting por IP/usuario más allá del honeypot (ej. Resend rate limits, Upstash, etc.).
 - Dominio propio verificado en Resend (`from` con dominio del proyecto): se usa `onboarding@resend.dev` hasta que exista un dominio configurado.
 - Plantillas de correo HTML ricas (logos, estilos de marca): el correo se envía en texto plano o HTML mínimo con los tres campos.
@@ -39,14 +39,14 @@ export interface ContactoPayload {
   name: string;
   email: string;
   message: string;
-  honeypot: string;   // debe llegar vacío; si no, se descarta en silencio
+  honeypot: string; // debe llegar vacío; si no, se descarta en silencio
 }
 
-export type ContactoResult =
-  | { ok: true }
-  | { ok: false; error: string };  // mensaje ya listo para mostrar en el panel de error
+export type ContactoResult = { ok: true } | { ok: false; error: string }; // mensaje ya listo para mostrar en el panel de error
 
-export const enviarContacto = async (payload: ContactoPayload): Promise<ContactoResult> => { /* ... */ };
+export const enviarContacto = async (payload: ContactoPayload): Promise<ContactoResult> => {
+  /* ... */
+};
 ```
 
 Convenciones:
@@ -117,10 +117,10 @@ Convenciones:
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| `RESEND_API_KEY` termina commiteada por accidente (ej. alguien la pega directo en `contacto.ts` en vez de leerla de `process.env`). | El paso 2 exige leerla vía `process.env.RESEND_API_KEY`; `.env*` ya está en `.gitignore` desde el scaffold inicial. El criterio de aceptación de "no aparece en archivos versionados" se revisa con `git grep` antes de dar el paso por terminado. |
-| El remitente de prueba `onboarding@resend.dev` tiene límites más estrictos que un dominio verificado (solo puede enviar al correo dueño de la cuenta, y Resend puede aplicar rate limits agresivos en el plan free). Si se prueba muchas veces seguidas durante el desarrollo, algún envío puede fallar por rate limit, no por un bug real. | El estado `error` del formulario ya está diseñado para este caso; el paso 9 de verificación distingue explícitamente "forzar error con API key inválida" de un fallo real de rate limit, para no confundir ambos durante las pruebas. |
-| La Server Action se invoca sin que `RESEND_API_KEY` esté definida en `.env.local` (ej. en un checkout nuevo del repo). | `enviarContacto` verifica la variable al inicio y devuelve `{ ok: false, error: '...' }` en vez de lanzar una excepción no controlada que tumbaría toda la request en dev. |
-| El honeypot puede ser rellenado por autocompletado agresivo del navegador si no se marca correctamente `autoComplete='off'` y se posiciona fuera del flujo visual con un método que algunos lectores de pantalla no respetan (`display:none` es correcto, pero conviene no depender solo de CSS inline). | Se usa `aria-hidden='true'` + `tabIndex={-1}` + `autoComplete='off'` juntos, no solo ocultamiento visual, siguiendo la práctica estándar de honeypots accesibles. |
-| El correo enviado con `resend.emails.send` puede caer en spam del destinatario si el contenido es muy simple (sin dominio verificado, sin SPF/DKIM propios). | Aceptado como limitación conocida del remitente de pruebas; se revisa manualmente en el paso 9 que el correo llegue (aunque sea a spam). Pasar a un dominio verificado es la mitigación real, fuera de alcance de esta spec. |
+| Riesgo                                                                                                                                                                                                                                                                                                                                      | Mitigación                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RESEND_API_KEY` termina commiteada por accidente (ej. alguien la pega directo en `contacto.ts` en vez de leerla de `process.env`).                                                                                                                                                                                                         | El paso 2 exige leerla vía `process.env.RESEND_API_KEY`; `.env*` ya está en `.gitignore` desde el scaffold inicial. El criterio de aceptación de "no aparece en archivos versionados" se revisa con `git grep` antes de dar el paso por terminado. |
+| El remitente de prueba `onboarding@resend.dev` tiene límites más estrictos que un dominio verificado (solo puede enviar al correo dueño de la cuenta, y Resend puede aplicar rate limits agresivos en el plan free). Si se prueba muchas veces seguidas durante el desarrollo, algún envío puede fallar por rate limit, no por un bug real. | El estado `error` del formulario ya está diseñado para este caso; el paso 9 de verificación distingue explícitamente "forzar error con API key inválida" de un fallo real de rate limit, para no confundir ambos durante las pruebas.              |
+| La Server Action se invoca sin que `RESEND_API_KEY` esté definida en `.env.local` (ej. en un checkout nuevo del repo).                                                                                                                                                                                                                      | `enviarContacto` verifica la variable al inicio y devuelve `{ ok: false, error: '...' }` en vez de lanzar una excepción no controlada que tumbaría toda la request en dev.                                                                         |
+| El honeypot puede ser rellenado por autocompletado agresivo del navegador si no se marca correctamente `autoComplete='off'` y se posiciona fuera del flujo visual con un método que algunos lectores de pantalla no respetan (`display:none` es correcto, pero conviene no depender solo de CSS inline).                                    | Se usa `aria-hidden='true'` + `tabIndex={-1}` + `autoComplete='off'` juntos, no solo ocultamiento visual, siguiendo la práctica estándar de honeypots accesibles.                                                                                  |
+| El correo enviado con `resend.emails.send` puede caer en spam del destinatario si el contenido es muy simple (sin dominio verificado, sin SPF/DKIM propios).                                                                                                                                                                                | Aceptado como limitación conocida del remitente de pruebas; se revisa manualmente en el paso 9 que el correo llegue (aunque sea a spam). Pasar a un dominio verificado es la mitigación real, fuera de alcance de esta spec.                       |

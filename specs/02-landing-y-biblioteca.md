@@ -39,21 +39,21 @@ Un archivo nuevo. Nada se persiste: son constantes en memoria, igual que `games.
 import type { GameAccent } from './games';
 
 export interface RecentScore {
-  player: string;      // alias, p. ej. "NEONFOX"
-  game: string;        // título mostrado, p. ej. "Caída" (no es el id de la ruta)
+  player: string; // alias, p. ej. "NEONFOX"
+  game: string; // título mostrado, p. ej. "Caída" (no es el id de la ruta)
   score: number;
-  ago: string;         // ya formateado: "hace 2 min"
-  color: GameAccent;   // acento del alias: cyan | magenta | yellow | green
+  ago: string; // ya formateado: "hace 2 min"
+  color: GameAccent; // acento del alias: cyan | magenta | yellow | green
 }
 
 export interface TopPlayer {
-  rank: number;        // 1..5
+  rank: number; // 1..5
   player: string;
   score: number;
 }
 
-export const RECENT_SCORES: readonly RecentScore[];  // las 7 filas del ticker
-export const TOP_PLAYERS: readonly TopPlayer[];      // las 5 filas del top de hoy
+export const RECENT_SCORES: readonly RecentScore[]; // las 7 filas del ticker
+export const TOP_PLAYERS: readonly TopPlayer[]; // las 5 filas del top de hoy
 ```
 
 Convenciones:
@@ -149,14 +149,14 @@ El texto de las cuatro tarjetas de características, las tres estadísticas, la 
 
 ## Riesgos
 
-| Riesgo | Mitigación |
-| --- | --- |
-| El `IntersectionObserver` no se dispara (JS deshabilitado, error de hidratación, sección ya en viewport al cargar) y media página queda en opacidad 0. | El hero queda fuera de `<Reveal>`; el observer usa `threshold: 0.12` y se registra en el primer efecto, de modo que las secciones ya visibles reciben `.in` inmediatamente. El paso 13 captura cada sección tras hacer scroll, justo para detectar este fallo. |
-| Anexar 250 líneas a `app/globals.css` puede colisionar con selectores existentes y romper pantallas ya aprobadas. Hay nombres genéricos en juego (`.stat-block`, `.top-row`, `.reveal`). | El paso 3 solo añade al final y no modifica nada previo; su verificación es revisar que `/biblioteca`, `/salon`, `/auth` y `/juegos/caida` no cambian. `.stat-strip` (existente) y `.stat-block` (nuevo) son selectores distintos. |
-| Mover `app/page.tsx` deja imports relativos rotos que TypeScript detecta, pero también enlaces `href='/'` esparcidos que **no** da ningún error: apuntarían a la landing en silencio. | El paso 1 concentra los tres puntos conocidos (nav, `VOLVER AL VAULT`, `router.push` de auth) y se cierra con un `grep` de `href='/'` y `push('/')` sobre `app/` antes de dar el paso por hecho. |
-| El hero usa `min-height: calc(100vh - 60px)`. Si la altura real del nav no es 60 px, aparece una franja sobrante o un recorte. | Se comprueba en la captura de escritorio y en la de móvil del paso 13; si no cuadra, se ajusta el `calc` a la altura real de `.av-nav`. |
-| La landing suma un tercer origen de puntuaciones ficticias (`activity.ts`) junto a `games.ts` y `seededScores`. Los números pueden contradecirse entre pantallas. | Es una inconsistencia asumida y documentada: el copy se porta tal cual. Cuando existan datos reales, `app/data/` es el único lugar donde tocar. |
-| `home.jsx` es JSX suelto para navegador: atributos y estructuras que TypeScript o el compilador de React rechazan (`rows="5"`, `strokeWidth` numérico en SVG, claves de `style` en camelCase). | Se porta sección por sección (pasos 5–8) con `npx tsc --noEmit` como red, no de un solo copiar y pegar. |
+| Riesgo                                                                                                                                                                                         | Mitigación                                                                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| El `IntersectionObserver` no se dispara (JS deshabilitado, error de hidratación, sección ya en viewport al cargar) y media página queda en opacidad 0.                                         | El hero queda fuera de `<Reveal>`; el observer usa `threshold: 0.12` y se registra en el primer efecto, de modo que las secciones ya visibles reciben `.in` inmediatamente. El paso 13 captura cada sección tras hacer scroll, justo para detectar este fallo. |
+| Anexar 250 líneas a `app/globals.css` puede colisionar con selectores existentes y romper pantallas ya aprobadas. Hay nombres genéricos en juego (`.stat-block`, `.top-row`, `.reveal`).       | El paso 3 solo añade al final y no modifica nada previo; su verificación es revisar que `/biblioteca`, `/salon`, `/auth` y `/juegos/caida` no cambian. `.stat-strip` (existente) y `.stat-block` (nuevo) son selectores distintos.                             |
+| Mover `app/page.tsx` deja imports relativos rotos que TypeScript detecta, pero también enlaces `href='/'` esparcidos que **no** da ningún error: apuntarían a la landing en silencio.          | El paso 1 concentra los tres puntos conocidos (nav, `VOLVER AL VAULT`, `router.push` de auth) y se cierra con un `grep` de `href='/'` y `push('/')` sobre `app/` antes de dar el paso por hecho.                                                               |
+| El hero usa `min-height: calc(100vh - 60px)`. Si la altura real del nav no es 60 px, aparece una franja sobrante o un recorte.                                                                 | Se comprueba en la captura de escritorio y en la de móvil del paso 13; si no cuadra, se ajusta el `calc` a la altura real de `.av-nav`.                                                                                                                        |
+| La landing suma un tercer origen de puntuaciones ficticias (`activity.ts`) junto a `games.ts` y `seededScores`. Los números pueden contradecirse entre pantallas.                              | Es una inconsistencia asumida y documentada: el copy se porta tal cual. Cuando existan datos reales, `app/data/` es el único lugar donde tocar.                                                                                                                |
+| `home.jsx` es JSX suelto para navegador: atributos y estructuras que TypeScript o el compilador de React rechazan (`rows="5"`, `strokeWidth` numérico en SVG, claves de `style` en camelCase). | Se porta sección por sección (pasos 5–8) con `npx tsc --noEmit` como red, no de un solo copiar y pegar.                                                                                                                                                        |
 
 ## Lo que **no** entra en esta spec
 
