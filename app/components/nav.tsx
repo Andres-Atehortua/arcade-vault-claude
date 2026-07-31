@@ -12,6 +12,7 @@ const Nav = () => {
   // Game routes keep "Biblioteca" lit, matching the prototype.
   const isLibrary = pathname.startsWith('/biblioteca') || pathname.startsWith('/juegos');
   const isHall = pathname.startsWith('/salon');
+  const isAbout = pathname.startsWith('/acerca-de');
   const isAuth = pathname.startsWith('/auth');
 
   const close = () => setOpen(false);
@@ -34,6 +35,9 @@ const Nav = () => {
           </Link>
           <Link className={isHall ? 'active' : ''} href='/salon'>
             Salón de la Fama
+          </Link>
+          <Link className={isAbout ? 'active' : ''} href='/acerca-de'>
+            Acerca de
           </Link>
         </div>
         <div className='spacer' />
@@ -69,6 +73,9 @@ const Nav = () => {
         </Link>
         <Link className={isHall ? 'active' : ''} href='/salon' onClick={close}>
           Salón de la Fama
+        </Link>
+        <Link className={isAbout ? 'active' : ''} href='/acerca-de' onClick={close}>
+          Acerca de
         </Link>
         <Link className={isAuth ? 'active' : ''} href='/auth' onClick={close}>
           Iniciar Sesión
