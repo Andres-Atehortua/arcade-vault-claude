@@ -8,8 +8,9 @@ const Nav = () => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  const isHome = pathname === '/';
   // Game routes keep "Biblioteca" lit, matching the prototype.
-  const isLibrary = pathname === '/' || pathname.startsWith('/juegos');
+  const isLibrary = pathname.startsWith('/biblioteca') || pathname.startsWith('/juegos');
   const isHall = pathname.startsWith('/salon');
   const isAuth = pathname.startsWith('/auth');
 
@@ -25,7 +26,10 @@ const Nav = () => {
           </div>
         </Link>
         <div className='links'>
-          <Link className={isLibrary ? 'active' : ''} href='/'>
+          <Link className={isHome ? 'active' : ''} href='/'>
+            Inicio
+          </Link>
+          <Link className={isLibrary ? 'active' : ''} href='/biblioteca'>
             Biblioteca
           </Link>
           <Link className={isHall ? 'active' : ''} href='/salon'>
@@ -57,7 +61,10 @@ const Nav = () => {
         <div className='pixel neon-cyan' style={{ fontSize: 11, marginBottom: 16 }}>
           MENÚ
         </div>
-        <Link className={isLibrary ? 'active' : ''} href='/' onClick={close}>
+        <Link className={isHome ? 'active' : ''} href='/' onClick={close}>
+          Inicio
+        </Link>
+        <Link className={isLibrary ? 'active' : ''} href='/biblioteca' onClick={close}>
           Biblioteca
         </Link>
         <Link className={isHall ? 'active' : ''} href='/salon' onClick={close}>

@@ -70,7 +70,7 @@ const HallOfFame = () => {
       </div>
 
       <div className='hall-actions'>
-        <Link className='btn lg' href='/'>
+        <Link className='btn lg' href='/biblioteca'>
           VOLVER A LA BIBLIOTECA
         </Link>
       </div>

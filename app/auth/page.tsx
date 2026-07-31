@@ -15,7 +15,7 @@ const AuthPage = () => {
 
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push('/');
+    router.push('/biblioteca');
   };
 
   return (
@@ -77,7 +77,7 @@ const AuthPage = () => {
         <button
           className='btn ghost auth-guest'
           type='button'
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/biblioteca')}
         >
           JUGAR COMO INVITADO
         </button>
