@@ -9,7 +9,7 @@ const GameNotFound = () => {
         Esta máquina no existe en el Vault. Puede que el cartucho se haya
         quemado o que la URL esté mal tecleada.
       </p>
-      <Link className='btn lg pulse' href='/'>
+      <Link className='btn lg pulse' href='/biblioteca'>
         VOLVER AL VAULT
       </Link>
     </section>
