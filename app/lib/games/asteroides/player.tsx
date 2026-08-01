@@ -31,10 +31,13 @@ const formatScore = (score: number) => String(score).replace(/\B(?=(\d{3})+(?!\d
 
 const AsteroidesPlayer = ({ game }: { game: Game }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const crtRef = useRef<HTMLDivElement>(null);
+  const fullscreenToggleRef = useRef<(() => void) | null>(null);
   const gameRef = useRef<AsteroidsGame | null>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const justPressedRef = useRef<Record<string, boolean>>({});
   const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,6 +100,35 @@ const AsteroidesPlayer = ({ game }: { game: Game }) => {
       gameRef.current = null;
     };
   }, []);
+
+  /**
+   * The label must also follow Esc and the browser's own fullscreen controls.
+   * `F` mirrors the button because the HUD sits outside the fullscreen element,
+   * so once expanded the button itself is no longer reachable.
+   */
+  useEffect(() => {
+    const toggle = () => {
+      if (document.fullscreenElement) void document.exitFullscreen();
+      else void crtRef.current?.requestFullscreen().catch(() => {});
+    };
+    const onChange = () => setIsFullscreen(document.fullscreenElement === crtRef.current);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.code !== 'KeyF' || event.metaKey || event.ctrlKey || event.altKey) return;
+      toggle();
+    };
+    fullscreenToggleRef.current = toggle;
+    document.addEventListener('fullscreenchange', onChange);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
+  const toggleFullscreen = (event: MouseEvent<HTMLButtonElement>) => {
+    event.currentTarget.blur();
+    fullscreenToggleRef.current?.();
+  };
 
   const isPaused = snapshot.phase === 'paused';
   const isGameOver = snapshot.phase === 'gameover';
@@ -190,13 +222,16 @@ const AsteroidesPlayer = ({ game }: { game: Game }) => {
           <button className="btn magenta" onClick={forceEnd} disabled={isGameOver}>
             FIN
           </button>
+          <button className="btn ghost" onClick={toggleFullscreen}>
+            {isFullscreen ? 'VENTANA' : 'PANTALLA'}
+          </button>
           <Link className="btn ghost" href={`/juegos/${game.id}`}>
             SALIR
           </Link>
         </div>
       </div>
 
-      <div className="crt">
+      <div className="crt" ref={crtRef}>
         <div className="crt-screen">
           <canvas className="game-canvas" ref={canvasRef} width={WIDTH} height={HEIGHT} onPointerDown={restartOnTap} />
 
