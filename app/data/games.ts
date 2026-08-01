@@ -89,6 +89,18 @@ export const GAMES: Game[] = [
     plays: '15.6K',
   },
   {
+    id: 'asteroides',
+    title: 'ASTEROIDES',
+    short: 'Pulveriza rocas espaciales en gravedad cero.',
+    long: 'Pilota una nave triangular a la deriva en el vacío. Dispara y rota para partir asteroides en fragmentos cada vez más pequeños, recoge el power-up de disparo triple y sobrevive tanto como puedas.',
+    cat: 'SHOOTER',
+    cover: 'cover-asteroides',
+    color: 'cyan',
+    // Real engine behind this one: no invented history, starts at zero.
+    best: 0,
+    plays: '0',
+  },
+  {
     id: 'ranaria',
     title: 'RANARIA',
     short: 'Cruza la autopista de pixeles.',

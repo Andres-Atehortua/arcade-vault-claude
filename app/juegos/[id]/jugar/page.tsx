@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { GAMES, getGameById } from '../../../data/games';
+import AsteroidesPlayer from '../../../lib/games/asteroides/player';
 
 export const generateStaticParams = async () => GAMES.map((game) => ({ id: game.id }));
 
@@ -9,6 +10,8 @@ const GamePlayerPage = async ({ params }: { params: Promise<{ id: string }> }) =
   const game = getGameById(id);
 
   if (!game) notFound();
+
+  if (game.id === 'asteroides') return <AsteroidesPlayer game={game} />;
 
   return (
     <div className="av-player fade-in">

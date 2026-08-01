@@ -879,6 +879,38 @@ a {
   filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.4));
 }
 
+/* Vector-wireframe look: hollow cyan rings over a violet nebula,
+   deliberately unlike the solid grey rocks of .cover-rocas. */
+.cover-asteroides {
+  background:
+    linear-gradient(0deg, rgba(0, 245, 255, 0.18) 0%, transparent 45%),
+    linear-gradient(180deg, #1b0a3a 0%, #0a0a18 60%, #000 100%);
+}
+.cover-asteroides::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 26% 34%, transparent 0 20px, var(--cyan) 20px 21px, transparent 22px),
+    radial-gradient(circle at 72% 62%, transparent 0 13px, var(--cyan) 13px 14px, transparent 15px),
+    radial-gradient(circle at 84% 24%, transparent 0 7px, var(--cyan) 7px 8px, transparent 9px),
+    radial-gradient(circle at 46% 78%, var(--magenta) 0 3px, transparent 4px),
+    radial-gradient(circle at 14% 76%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 14%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 82%, rgba(255, 255, 255, 0.7) 0 1px, transparent 2px);
+  filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.7));
+}
+.cover-asteroides::before {
+  content: '➤';
+  position: absolute;
+  left: 44%;
+  top: 46%;
+  color: var(--cyan);
+  font-size: 20px;
+  text-shadow: 0 0 10px var(--cyan);
+  z-index: 1;
+}
+
 /* ===== detail screen ===== */
 .av-detail {
   display: grid;
@@ -1171,6 +1203,74 @@ a {
 .crt-bottom .led.warn::before {
   background: var(--yellow);
   box-shadow: 0 0 6px var(--yellow);
+}
+
+/* Live game canvas: fixed 800x600 internally, stretched to the CRT screen */
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.hud-stat.triple .v {
+  color: var(--green);
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+}
+
+/* ===== ASTEROIDS TOUCH CONTROLS ===== */
+/* Hidden by default: only surfaced on coarse pointers or narrow screens. */
+.touch-controls {
+  display: none;
+}
+@media (pointer: coarse), (max-width: 720px) {
+  .touch-controls {
+    display: flex;
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 6;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 16px 16px;
+    pointer-events: none;
+  }
+}
+.touch-pad {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.touch-btn {
+  pointer-events: auto;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--cyan);
+  background: rgba(5, 5, 12, 0.55);
+  border: 1px solid rgba(0, 245, 255, 0.5);
+  border-radius: 50%;
+  text-shadow: 0 0 6px rgba(0, 245, 255, 0.6);
+  touch-action: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-btn:active {
+  background: rgba(0, 245, 255, 0.22);
+  box-shadow: 0 0 14px rgba(0, 245, 255, 0.45);
+}
+.touch-btn.fire {
+  width: 84px;
+  height: 84px;
+  font-size: 26px;
+  color: var(--magenta);
+  border-color: rgba(255, 0, 110, 0.6);
+  text-shadow: 0 0 8px rgba(255, 0, 110, 0.7);
+}
+.touch-btn.fire:active {
+  background: rgba(255, 0, 110, 0.22);
+  box-shadow: 0 0 14px rgba(255, 0, 110, 0.5);
 }
 
 /* attract mode notice, shown while a game has no engine yet */
