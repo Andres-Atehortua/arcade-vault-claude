@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react';
-import type { Game } from '@/app/data/games';
+import type { GameRow } from '@/app/lib/supabase/types';
 import { AsteroidsGame, type GameSnapshot } from './engine';
+import SaveScoreForm from './save-score-form';
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -26,10 +27,13 @@ const sameSnapshot = (a: GameSnapshot, b: GameSnapshot) =>
   a.phase === b.phase &&
   a.tripleShotActive === b.tripleShotActive;
 
+/** While the alias field has focus its keys belong to the form, not to the ship. */
+const isTyping = (event: KeyboardEvent) => event.target instanceof HTMLInputElement;
+
 /** Thousands separator without Intl, so server and client markup always match. */
 const formatScore = (score: number) => String(score).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-const AsteroidesPlayer = ({ game }: { game: Game }) => {
+const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const crtRef = useRef<HTMLDivElement>(null);
   const fullscreenToggleRef = useRef<(() => void) | null>(null);
@@ -58,13 +62,13 @@ const AsteroidesPlayer = ({ game }: { game: Game }) => {
     gameRef.current = instance;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!GAME_KEYS.includes(event.code)) return;
+      if (isTyping(event) || !GAME_KEYS.includes(event.code)) return;
       event.preventDefault();
       if (!keys[event.code]) justPressed[event.code] = true;
       keys[event.code] = true;
     };
     const onKeyUp = (event: KeyboardEvent) => {
-      if (!GAME_KEYS.includes(event.code)) return;
+      if (isTyping(event) || !GAME_KEYS.includes(event.code)) return;
       event.preventDefault();
       keys[event.code] = false;
     };
@@ -113,7 +117,7 @@ const AsteroidesPlayer = ({ game }: { game: Game }) => {
     };
     const onChange = () => setIsFullscreen(document.fullscreenElement === crtRef.current);
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.code !== 'KeyF' || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isTyping(event) || event.code !== 'KeyF' || event.metaKey || event.ctrlKey || event.altKey) return;
       toggle();
     };
     fullscreenToggleRef.current = toggle;
@@ -234,6 +238,9 @@ const AsteroidesPlayer = ({ game }: { game: Game }) => {
       <div className="crt" ref={crtRef}>
         <div className="crt-screen">
           <canvas className="game-canvas" ref={canvasRef} width={WIDTH} height={HEIGHT} onPointerDown={restartOnTap} />
+
+          {/* Unmounts on restart, so the next run always starts with an empty field. */}
+          {isGameOver && <SaveScoreForm gameId={game.id} score={snapshot.score} />}
 
           {/* Touch controls: same keys the engine already reads, no separate input path */}
           <div className="touch-controls">

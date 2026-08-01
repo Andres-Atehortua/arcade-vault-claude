@@ -1,13 +1,19 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { GAMES, getGameById } from '../../../data/games';
 import AsteroidesPlayer from '../../../lib/games/asteroides/player';
+import { getGameById, getGames } from '../../../lib/supabase/queries';
 
-export const generateStaticParams = async () => GAMES.map((game) => ({ id: game.id }));
+export const revalidate = 60;
+
+export const generateStaticParams = async () => {
+  const games = await getGames();
+
+  return games.map((game) => ({ id: game.id }));
+};
 
 const GamePlayerPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const game = getGameById(id);
+  const game = await getGameById(id);
 
   if (!game) notFound();
 

@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { useRef } from 'react';
 import type { MouseEvent } from 'react';
-import type { Game } from '../data/games';
+import type { GameRow } from '../lib/supabase/types';
 
-const accentClass = (color: Game['color']) => (color === 'magenta' ? ' magenta' : color === 'yellow' ? ' yellow' : '');
+const accentClass = (color: GameRow['color']) => (color === 'magenta' ? ' magenta' : color === 'yellow' ? ' yellow' : '');
 
-const GameCard = ({ game }: { game: Game }) => {
+const GameCard = ({ game }: { game: GameRow }) => {
   const tiltRef = useRef<HTMLAnchorElement>(null);
 
   const onMove = (e: MouseEvent<HTMLAnchorElement>) => {

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FeatureIcon, FloatingSilhouettes } from './components/home-icons';
-import { GAMES } from './data/games';
 import { RECENT_SCORES, TOP_PLAYERS } from './data/activity';
+import { getGames } from './lib/supabase/queries';
 import Reveal from './components/reveal';
 import type { FeatureIconKind } from './components/home-icons';
 
@@ -16,6 +16,8 @@ const STATS: Stat[] = [
   { n: 'MILES', u: 'DE PARTIDAS', s: 'JUGADAS CADA DÍA' },
   { n: 'GLOBAL', u: 'RANKING', s: 'COMPITE CON EL MUNDO' },
 ];
+
+export const revalidate = 60;
 
 const topRankClass = (i: number) => (i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '');
 
@@ -82,7 +84,9 @@ const FEATURES: Feature[] = [
   },
 ];
 
-const Home = () => {
+const Home = async () => {
+  const games = await getGames();
+
   return (
     <div className="home fade-in">
       <section className="home-hero">
@@ -140,7 +144,7 @@ const Home = () => {
           <div className="section-rule" />
         </div>
         <div className="mini-rail">
-          {GAMES.slice(0, 6).map((game) => (
+          {games.slice(0, 6).map((game) => (
             <Link key={game.id} className="mini-card" href={`/juegos/${game.id}`}>
               <div className="mini-cover">
                 <div className={'cover-bg ' + game.cover} />
