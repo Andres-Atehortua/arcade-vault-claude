@@ -1,4 +1,4 @@
-import type { GameAccent } from './games';
+import type { GameAccent } from '../lib/supabase/types';
 
 export interface RecentScore {
   player: string;

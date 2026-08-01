@@ -1,7 +1,11 @@
 import LibraryFilters from '../components/library-filters';
-import { GAMES } from '../data/games';
+import { getGames } from '../lib/supabase/queries';
 
-const Biblioteca = () => {
+export const revalidate = 60;
+
+const Biblioteca = async () => {
+  const games = await getGames();
+
   return (
     <div className="fade-in">
       <section className="av-hero">
@@ -11,7 +15,7 @@ const Biblioteca = () => {
         </div>
       </section>
 
-      <LibraryFilters games={GAMES} />
+      <LibraryFilters games={games} />
     </div>
   );
 };

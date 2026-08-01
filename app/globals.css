@@ -1061,6 +1061,29 @@ a {
   text-shadow: 0 0 6px rgba(217, 122, 58, 0.5);
 }
 
+/* Empty leaderboard: same "insert coin" cursor the hero uses, so a game with no
+   scores yet reads as an invitation rather than as a missing block. */
+.score-empty {
+  text-align: center;
+  padding: 56px 24px;
+  color: var(--ink-faint);
+}
+.score-empty .pixel {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--magenta);
+  text-shadow: 0 0 8px rgba(255, 0, 110, 0.5);
+}
+.score-empty .blink {
+  animation: blink 1.2s steps(1, end) infinite;
+}
+.score-empty p {
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
 /* ===== player ===== */
 .av-player {
   /* Vertical chrome above/below the CRT screen: sticky nav, own margin, HUD,
@@ -1220,6 +1243,61 @@ a {
   height: 100%;
   touch-action: none;
 }
+/* Save-score overlay: lower band of the CRT, under the canvas GAME OVER title. */
+.save-score {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px 22px;
+  background: linear-gradient(180deg, transparent, rgba(5, 5, 12, 0.92) 40%);
+  text-align: center;
+}
+.save-score label,
+.save-score .rank {
+  font-size: 12px;
+  color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+.save-score .rank {
+  font-size: 20px;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(255, 207, 58, 0.6);
+}
+.save-score-row {
+  display: flex;
+  gap: 10px;
+}
+.save-score input {
+  width: 190px;
+  padding: 10px 12px;
+  background: rgba(5, 5, 12, 0.9);
+  border: 1px solid var(--cyan);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.save-score input:focus-visible {
+  outline: 2px solid var(--magenta);
+  outline-offset: 2px;
+}
+.save-score p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+.save-score .error {
+  color: var(--magenta);
+}
+
 .hud-stat.triple .v {
   color: var(--green);
   text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
@@ -1678,6 +1756,15 @@ a {
   gap: 14px;
   margin-bottom: 24px;
   align-items: end;
+}
+/* A brand-new leaderboard may hold 1 or 2 scores: keep the podium centred
+   instead of leaving the champion pinned to the left column. */
+.podium:not(:has(> :nth-child(3))) {
+  display: flex;
+  justify-content: center;
+}
+.podium:not(:has(> :nth-child(3))) .podium-slot {
+  flex: 0 1 320px;
 }
 @media (max-width: 720px) {
   .podium {

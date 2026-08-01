@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CATS, type Game } from '../data/games';
+import { CATS, type GameRow } from '../lib/supabase/types';
 import GameCard from './game-card';
 
-const LibraryFilters = ({ games }: { games: Game[] }) => {
+const LibraryFilters = ({ games }: { games: GameRow[] }) => {
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState<(typeof CATS)[number]>('TODOS');
 
