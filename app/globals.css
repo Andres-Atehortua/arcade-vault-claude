@@ -1509,6 +1509,40 @@ a {
   box-shadow: 0 0 14px rgba(0, 255, 136, 0.5);
 }
 
+/* Serpentina layout: a single 4-direction cross — no fire button, unlike the
+   3-button horizontal layouts above. Centered as its own group. */
+.touch-controls.dpad {
+  width: 100%;
+  justify-content: center;
+}
+.dpad-cross {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 56px);
+  gap: 6px;
+}
+.dpad-cross .touch-btn {
+  width: 56px;
+  height: 56px;
+}
+.dpad-cross .touch-btn.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.dpad-cross .touch-btn.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.dpad-cross .touch-btn.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.dpad-cross .touch-btn.down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
 /* attract mode notice, shown while a game has no engine yet */
 .crt-attract {
   z-index: 5;
