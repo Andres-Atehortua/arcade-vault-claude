@@ -3,41 +3,42 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
-import { AsteroidsGame, type GameSnapshot } from './engine';
 import SaveScoreForm from '../save-score-form';
+import { PIECE_COLORS, PIECE_SHAPES, TetrisGame, type GameSnapshot } from './engine';
 
-const WIDTH = 800;
+const WIDTH = 300;
 const HEIGHT = 600;
 
+/** Next-piece preview: a 4x4 box of cells, the widest piece being 4 wide. */
+const PREVIEW_CELL = 14;
+const PREVIEW_SIZE = PREVIEW_CELL * 4;
+
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
-const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'];
+const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'KeyX', 'KeyP'];
 
 const INITIAL_SNAPSHOT: GameSnapshot = {
   score: 0,
-  lives: 3,
+  lines: 0,
   level: 1,
   phase: 'playing',
-  tripleShotActive: false,
+  nextPiece: 1,
 };
 
 const sameSnapshot = (a: GameSnapshot, b: GameSnapshot) =>
-  a.score === b.score &&
-  a.lives === b.lives &&
-  a.level === b.level &&
-  a.phase === b.phase &&
-  a.tripleShotActive === b.tripleShotActive;
+  a.score === b.score && a.lines === b.lines && a.level === b.level && a.phase === b.phase && a.nextPiece === b.nextPiece;
 
-/** While the alias field has focus its keys belong to the form, not to the ship. */
+/** While the alias field has focus its keys belong to the form, not to the piece. */
 const isTyping = (event: KeyboardEvent) => event.target instanceof HTMLInputElement;
 
 /** Thousands separator without Intl, so server and client markup always match. */
 const formatScore = (score: number) => String(score).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
+const TetrisPlayer = ({ game }: { game: GameRow }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const previewRef = useRef<HTMLCanvasElement>(null);
   const crtRef = useRef<HTMLDivElement>(null);
   const fullscreenToggleRef = useRef<(() => void) | null>(null);
-  const gameRef = useRef<AsteroidsGame | null>(null);
+  const gameRef = useRef<TetrisGame | null>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const justPressedRef = useRef<Record<string, boolean>>({});
   const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
@@ -57,7 +58,7 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
       return value;
     };
 
-    const instance = new AsteroidsGame(ctx, WIDTH, HEIGHT);
+    const instance = new TetrisGame(ctx, WIDTH, HEIGHT);
     instance.handleInput(keys, consume);
     gameRef.current = instance;
 
@@ -129,6 +130,51 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
     };
   }, []);
 
+  /**
+   * The engine only reports which piece comes next; painting it is the HUD's job.
+   * Depending on `nextPiece` alone keeps this off the 60 fps path: it redraws when
+   * a piece locks, and never while paused.
+   */
+  useEffect(() => {
+    const ctx = previewRef.current?.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, PREVIEW_SIZE, PREVIEW_SIZE);
+    const shape = PIECE_SHAPES[snapshot.nextPiece];
+
+    // Center on the filled cells, not on the matrix: several shapes carry an
+    // empty padding row that would push them off-center.
+    let minR = shape.length;
+    let maxR = -1;
+    let minC = shape[0].length;
+    let maxC = -1;
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        if (!shape[r][c]) continue;
+        minR = Math.min(minR, r);
+        maxR = Math.max(maxR, r);
+        minC = Math.min(minC, c);
+        maxC = Math.max(maxC, c);
+      }
+    }
+
+    const offX = (PREVIEW_SIZE - (maxC - minC + 1) * PREVIEW_CELL) / 2;
+    const offY = (PREVIEW_SIZE - (maxR - minR + 1) * PREVIEW_CELL) / 2;
+
+    for (let r = minR; r <= maxR; r++) {
+      for (let c = minC; c <= maxC; c++) {
+        const cell = shape[r][c];
+        if (!cell) continue;
+        const x = offX + (c - minC) * PREVIEW_CELL;
+        const y = offY + (r - minR) * PREVIEW_CELL;
+        ctx.fillStyle = PIECE_COLORS[cell];
+        ctx.fillRect(x + 1, y + 1, PREVIEW_CELL - 2, PREVIEW_CELL - 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+        ctx.fillRect(x + 1, y + 1, PREVIEW_CELL - 2, 3);
+      }
+    }
+  }, [snapshot.nextPiece]);
+
   const toggleFullscreen = (event: MouseEvent<HTMLButtonElement>) => {
     event.currentTarget.blur();
     fullscreenToggleRef.current?.();
@@ -137,7 +183,7 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
   const isPaused = snapshot.phase === 'paused';
   const isGameOver = snapshot.phase === 'gameover';
 
-  // Blur after clicking so a later Space goes to the game, not back to the button.
+  // Blur after clicking so a later Space drops the piece instead of pressing the button again.
   const togglePause = (event: MouseEvent<HTMLButtonElement>) => {
     event.currentTarget.blur();
     const instance = gameRef.current;
@@ -204,20 +250,18 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
             <div className="l">Puntuación</div>
             <div className="v">{formatScore(snapshot.score)}</div>
           </div>
-          <div className="hud-stat lives">
-            <div className="l">Vidas</div>
-            <div className="v">{snapshot.lives > 0 ? '♥ '.repeat(snapshot.lives).trim() : '—'}</div>
+          <div className="hud-stat lines">
+            <div className="l">Líneas</div>
+            <div className="v">{snapshot.lines}</div>
           </div>
           <div className="hud-stat level">
             <div className="l">Nivel</div>
             <div className="v">{String(snapshot.level).padStart(2, '0')}</div>
           </div>
-          {snapshot.tripleShotActive && (
-            <div className="hud-stat triple">
-              <div className="l">Power-up</div>
-              <div className="v">3x</div>
-            </div>
-          )}
+          <div className="hud-stat next">
+            <div className="l">Siguiente</div>
+            <canvas ref={previewRef} width={PREVIEW_SIZE} height={PREVIEW_SIZE} aria-hidden />
+          </div>
         </div>
         <div className="hud-actions">
           <button className="btn yellow" onClick={togglePause} disabled={isGameOver}>
@@ -237,27 +281,32 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
 
       <div className="crt" ref={crtRef}>
         <div className="crt-screen">
-          <canvas className="game-canvas" ref={canvasRef} width={WIDTH} height={HEIGHT} onPointerDown={restartOnTap} />
+          <canvas className="game-canvas tall" ref={canvasRef} width={WIDTH} height={HEIGHT} onPointerDown={restartOnTap} />
 
           {/* Unmounts on restart, so the next run always starts with an empty field. */}
           {isGameOver && <SaveScoreForm gameId={game.id} score={snapshot.score} />}
 
           {/* Touch controls: same keys the engine already reads, no separate input path */}
-          <div className="touch-controls">
+          <div className="touch-controls tetris">
             <div className="touch-pad">
-              <button className="touch-btn" aria-label="Rotar a la izquierda" data-code="ArrowLeft" {...touchHandlers}>
+              <button className="touch-btn" aria-label="Mover a la izquierda" data-code="ArrowLeft" {...touchHandlers}>
                 ◀
               </button>
-              <button className="touch-btn" aria-label="Propulsar" data-code="ArrowUp" {...touchHandlers}>
-                ▲
-              </button>
-              <button className="touch-btn" aria-label="Rotar a la derecha" data-code="ArrowRight" {...touchHandlers}>
+              <button className="touch-btn" aria-label="Mover a la derecha" data-code="ArrowRight" {...touchHandlers}>
                 ▶
               </button>
             </div>
-            <button className="touch-btn fire" aria-label="Disparar" data-code="Space" {...touchHandlers}>
-              ●
+            <button className="touch-btn" aria-label="Bajar una fila" data-code="ArrowDown" {...touchHandlers}>
+              ▼
             </button>
+            <div className="touch-pad">
+              <button className="touch-btn" aria-label="Rotar" data-code="ArrowUp" {...touchHandlers}>
+                ↻
+              </button>
+              <button className="touch-btn drop" aria-label="Soltar hasta el fondo" data-code="Space" {...touchHandlers}>
+                ⤓
+              </button>
+            </div>
           </div>
         </div>
         <div className="crt-bottom">
@@ -270,4 +319,4 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
   );
 };
 
-export default AsteroidesPlayer;
+export default TetrisPlayer;

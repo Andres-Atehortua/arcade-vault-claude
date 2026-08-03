@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AsteroidesPlayer from '../../../lib/games/asteroides/player';
+import TetrisPlayer from '../../../lib/games/tetris/player';
 import { getGameById, getGames } from '../../../lib/supabase/queries';
+import type { GameRow } from '../../../lib/supabase/types';
 
 export const revalidate = 60;
+
+/**
+ * Games that ship with a real engine. Anything missing here falls through to the
+ * "SIN CARTUCHO" cabinet below. No `next/dynamic` yet: neither engine is heavy
+ * enough to justify a separate chunk.
+ */
+const PLAYERS: Record<string, (props: { game: GameRow }) => React.ReactElement> = {
+  asteroides: AsteroidesPlayer,
+  tetris: TetrisPlayer,
+};
 
 export const generateStaticParams = async () => {
   const games = await getGames();
@@ -17,7 +29,8 @@ const GamePlayerPage = async ({ params }: { params: Promise<{ id: string }> }) =
 
   if (!game) notFound();
 
-  if (game.id === 'asteroides') return <AsteroidesPlayer game={game} />;
+  const Player = PLAYERS[game.id];
+  if (Player) return <Player game={game} />;
 
   return (
     <div className="av-player fade-in">

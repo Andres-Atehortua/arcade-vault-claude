@@ -505,7 +505,7 @@ a {
   letter-spacing: 0.2em;
   color: var(--yellow);
 }
-.av-hero .sub .blink {
+.blink {
   animation: blink 1.2s steps(1, end) infinite;
 }
 @keyframes blink {
@@ -883,8 +883,7 @@ a {
    deliberately unlike the solid grey rocks of .cover-rocas. */
 .cover-asteroides {
   background:
-    linear-gradient(0deg, rgba(0, 245, 255, 0.18) 0%, transparent 45%),
-    linear-gradient(180deg, #1b0a3a 0%, #0a0a18 60%, #000 100%);
+    linear-gradient(0deg, rgba(0, 245, 255, 0.18) 0%, transparent 45%), linear-gradient(180deg, #1b0a3a 0%, #0a0a18 60%, #000 100%);
 }
 .cover-asteroides::after {
   content: '';
@@ -908,6 +907,54 @@ a {
   color: var(--cyan);
   font-size: 20px;
   text-shadow: 0 0 10px var(--cyan);
+  z-index: 1;
+}
+
+/* The well seen from inside: two hairline walls, a stack rising off the floor
+   with one gap left open, and the hollow 3x3 nut hanging above it — the piece
+   that never fills that gap cleanly. Deliberately unlike .cover-tetro (the
+   `caida` stub), which floats solid pastel blocks over a violet nebula with no
+   floor, no walls and nothing to land on. */
+.cover-tetris {
+  background:
+    linear-gradient(0deg, rgba(0, 255, 136, 0.2) 0%, transparent 45%),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.45) 0 2px, transparent 2px calc(100% - 2px), rgba(0, 255, 136, 0.45) calc(100% - 2px)),
+    #05050c;
+}
+.cover-tetris::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* floor row — the gap is the 5th column */
+    linear-gradient(var(--green), var(--green)) 0% 100%/12.5% 20px,
+    linear-gradient(var(--cyan), var(--cyan)) 14.28% 100%/12.5% 20px,
+    linear-gradient(var(--green), var(--green)) 28.57% 100%/12.5% 20px,
+    linear-gradient(var(--cyan), var(--cyan)) 42.86% 100%/12.5% 20px,
+    linear-gradient(var(--green), var(--green)) 71.43% 100%/12.5% 20px,
+    linear-gradient(var(--cyan), var(--cyan)) 85.71% 100%/12.5% 20px,
+    /* second row */ linear-gradient(var(--cyan), var(--cyan)) 0% calc(100% - 20px)/12.5% 20px,
+    linear-gradient(var(--green), var(--green)) 14.28% calc(100% - 20px)/12.5% 20px,
+    linear-gradient(var(--magenta), var(--magenta)) 71.43% calc(100% - 20px)/12.5% 20px,
+    linear-gradient(var(--green), var(--green)) 85.71% calc(100% - 20px)/12.5% 20px,
+    /* third row */ linear-gradient(var(--green), var(--green)) 0% calc(100% - 40px)/12.5% 20px,
+    linear-gradient(var(--cyan), var(--cyan)) 85.71% calc(100% - 40px)/12.5% 20px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 7px rgba(0, 255, 136, 0.45));
+  image-rendering: pixelated;
+}
+.cover-tetris::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  width: 54px;
+  height: 54px;
+  transform: translateX(-50%);
+  border: 18px solid var(--green);
+  box-shadow:
+    0 0 14px rgba(0, 255, 136, 0.6),
+    inset 0 0 10px rgba(0, 255, 136, 0.35);
   z-index: 1;
 }
 
@@ -1130,6 +1177,18 @@ a {
   color: var(--yellow);
   text-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
 }
+.hud-stat.lines .v {
+  color: var(--green);
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+}
+/* Next-piece preview: the only HUD stat whose value is drawn, not typeset. */
+.hud-stat.next canvas {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--line);
+  background: rgba(5, 5, 12, 0.9);
+}
 .hud-actions {
   display: flex;
   gap: 10px;
@@ -1243,6 +1302,14 @@ a {
   height: 100%;
   touch-action: none;
 }
+/* Portrait playfields (the Tetris well is 1:2): pillarboxed inside the 4/3
+   screen instead of stretched to it, so the blocks stay square. */
+.game-canvas.tall {
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
 /* Save-score overlay: lower band of the CRT, under the canvas GAME OVER title. */
 .save-score {
   position: absolute;
@@ -1326,7 +1393,9 @@ a {
   display: none;
 }
 
-/* ===== ASTEROIDS TOUCH CONTROLS ===== */
+/* ===== ARCADE TOUCH CONTROLS ===== */
+/* Shared by every game with an engine: the shell and the buttons are generic,
+   only the layout modifier (.tetris) belongs to one game. */
 /* Hidden by default: only surfaced on coarse pointers or narrow screens. */
 .touch-controls {
   display: none;
@@ -1380,6 +1449,33 @@ a {
 .touch-btn.fire:active {
   background: rgba(255, 0, 110, 0.22);
   box-shadow: 0 0 14px rgba(255, 0, 110, 0.5);
+}
+
+/* Tetris layout: move on the left, soft drop in the middle, rotate and the
+   oversized hard drop on the right — the thumb that commits a piece is the one
+   that needs the biggest target. */
+.touch-controls.tetris {
+  align-items: center;
+}
+/* Equal-weight side groups so the soft-drop button sits on the real centre line,
+   not on whatever is left over between two groups of different widths. */
+.touch-controls.tetris > .touch-pad {
+  flex: 1 1 0;
+}
+.touch-controls.tetris > .touch-pad:last-child {
+  justify-content: flex-end;
+}
+.touch-controls.tetris .touch-btn.drop {
+  width: 84px;
+  height: 84px;
+  font-size: 30px;
+  color: var(--green);
+  border-color: rgba(0, 255, 136, 0.6);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.7);
+}
+.touch-controls.tetris .touch-btn.drop:active {
+  background: rgba(0, 255, 136, 0.22);
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.5);
 }
 
 /* attract mode notice, shown while a game has no engine yet */
