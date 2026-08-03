@@ -800,16 +800,38 @@ a {
 .cover-snake {
   background: linear-gradient(135deg, #003a2a, #0a0a18);
 }
+/* One continuous body (staircase path, classic Snake movement) instead of
+   loose blocks: cells are 9% x 12%, square under the cover's fixed 4:3
+   aspect ratio, so consecutive segments share an edge and read as one line. */
 .cover-snake::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-image:
-    radial-gradient(circle at 70% 50%, var(--magenta) 0 6px, transparent 7px),
-    linear-gradient(90deg, var(--green) 0 40px, transparent 40px) 20% 50% / 200px 12px no-repeat,
-    linear-gradient(90deg, var(--green) 0 12px, transparent 12px) calc(20% + 40px) calc(50% - 12px) / 12px 12px no-repeat,
-    linear-gradient(90deg, var(--green) 0 12px, transparent 12px) calc(20% + 28px) calc(50% - 12px) / 12px 12px no-repeat;
+  background:
+    linear-gradient(var(--green), var(--green)) 10% 15% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 19% 15% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 28% 15% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 28% 27% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 28% 39% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 37% 39% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 46% 39% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 46% 51% / 9% 12%,
+    linear-gradient(var(--green), var(--green)) 46% 63% / 9% 12%,
+    linear-gradient(#00cc6e, #00cc6e) 55% 63% / 9% 12%,
+    radial-gradient(circle at 74% 69%, var(--magenta) 0 7px, transparent 8px);
+  background-repeat: no-repeat;
   filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.6));
+}
+.cover-snake::before {
+  content: '';
+  position: absolute;
+  left: calc(55% + 6.5%);
+  top: calc(63% + 4%);
+  width: 3px;
+  height: 3px;
+  background: var(--ink);
+  box-shadow: 5px 0 0 var(--ink);
+  z-index: 1;
 }
 
 .cover-glot {
