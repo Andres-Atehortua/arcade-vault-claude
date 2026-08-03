@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AsteroidesPlayer from '../../../lib/games/asteroides/player';
 import RompebloquesPlayer from '../../../lib/games/rompebloques/player';
+import SerpentinaPlayer from '../../../lib/games/serpentina/player';
 import TetrisPlayer from '../../../lib/games/tetris/player';
 import { getGameById, getGames } from '../../../lib/supabase/queries';
 import type { GameRow } from '../../../lib/supabase/types';
@@ -17,6 +18,7 @@ const PLAYERS: Record<string, (props: { game: GameRow }) => React.ReactElement> 
   asteroides: AsteroidesPlayer,
   tetris: TetrisPlayer,
   rompebloques: RompebloquesPlayer,
+  serpentina: SerpentinaPlayer,
 };
 
 export const generateStaticParams = async () => {
