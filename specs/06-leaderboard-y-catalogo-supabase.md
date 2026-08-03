@@ -164,36 +164,36 @@ Valida `gameId` (debe existir en `games`), `alias` (3–12 chars, `[A-Z0-9_]` tr
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores ni advertencias.
-- [ ] `supabase/migrations/` contiene los tres archivos SQL versionados y `list_migrations` los reporta aplicados en el proyecto.
-- [ ] `select count(*) from public.games` devuelve 9, con `position` de 1 a 9 sin huecos ni repetidos.
-- [ ] `select count(*) from public.scores` devuelve 96, repartidas en los 8 juegos distintos de `asteroides`.
-- [ ] `select count(*) from public.scores where game_id = 'asteroides'` devuelve 0 antes de jugar la primera partida.
-- [ ] Un `insert` en `scores` con la anon key falla por RLS; el mismo `insert` con la service role key funciona.
-- [ ] Un `select` sobre `games` y sobre `scores` con la anon key devuelve filas.
-- [ ] Un `insert` con alias `ab` (2 caracteres) o `pepe!` falla por el `CHECK` de la BD.
-- [ ] Un `insert` con `score = -1` o `score = 10000001` falla por el `CHECK` de la BD.
-- [ ] `.env.template` documenta `SUPABASE_SERVICE_ROLE_KEY` sin valor; el valor real no aparece en ningún archivo versionado.
-- [ ] `grep -rn "SUPABASE_SERVICE_ROLE_KEY" app` solo devuelve `app/lib/supabase/admin.ts`.
-- [ ] `grep -rn "supabase/admin" app` no devuelve ningún archivo con `'use client'`.
-- [ ] `app/data/games.ts` y `app/data/scores.ts` no existen; `grep -rn "seededScores\|data/games\|data/scores" app` no devuelve nada.
-- [ ] `/biblioteca` muestra las 9 tarjetas en el mismo orden y con los mismos títulos, textos y coberturas que antes de esta spec.
-- [ ] Los filtros por categoría de `/biblioteca` siguen funcionando sobre los datos de Supabase.
-- [ ] `/juegos/caida` muestra 10 filas de puntajes reales de la tabla `scores`, ordenadas de mayor a menor.
-- [ ] Las fechas del leaderboard se muestran como `DD/MM/YYYY` y son idénticas en el HTML del servidor y tras la hidratación (sin advertencia de hydration mismatch en consola).
-- [ ] `/juegos/asteroides` muestra "AÚN NO HAY PUNTAJES — SÉ EL PRIMERO" en lugar del bloque de puntajes, sin errores en consola.
-- [ ] `/juegos/id-inexistente` sigue mostrando la pantalla de `not-found.tsx`.
-- [ ] `/salon` muestra las 9 pestañas y cambiar de pestaña no dispara ninguna petición de red (verificable en la pestaña Network de DevTools).
-- [ ] La pestaña ASTEROIDES del salón muestra el estado vacío en vez del podio, sin errores en consola.
-- [ ] Con exactamente 1 puntaje guardado en `asteroides`, el podio del salón renderiza solo el slot de oro y la tabla muestra 1 fila.
-- [ ] `/juegos/asteroides/jugar` arranca la partida con el mismo comportamiento que en SPEC 05; `/juegos/caida/jugar` sigue mostrando "SIN CARTUCHO".
-- [ ] Al terminar una partida de Asteroides, el overlay de GAME OVER muestra un campo de alias y un botón GUARDAR.
-- [ ] El campo de alias convierte lo escrito a mayúsculas y no admite más de 12 caracteres.
-- [ ] Guardar con alias válido muestra "PUESTO #N" con N igual a la posición real del puntaje en el ranking del juego.
-- [ ] Guardar con alias de menos de 3 caracteres muestra un error en línea, no cierra el overlay y no inserta ninguna fila.
-- [ ] Tras guardar y recargar, ese puntaje aparece en `/juegos/asteroides` y en la pestaña ASTEROIDES de `/salon`.
-- [ ] Es posible reiniciar la partida sin guardar el puntaje.
-- [ ] Guardar dos puntajes con el mismo alias produce dos filas distintas en el ranking, no una actualización.
+- [x] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores ni advertencias.
+- [x] `supabase/migrations/` contiene los tres archivos SQL versionados y `list_migrations` los reporta aplicados en el proyecto.
+- [x] `select count(*) from public.games` devuelve 9, con `position` de 1 a 9 sin huecos ni repetidos.
+- [x] `select count(*) from public.scores` devuelve 96, repartidas en los 8 juegos distintos de `asteroides`.
+- [x] `select count(*) from public.scores where game_id = 'asteroides'` devuelve 0 antes de jugar la primera partida.
+- [x] Un `insert` en `scores` con la anon key falla por RLS; el mismo `insert` con la service role key funciona.
+- [x] Un `select` sobre `games` y sobre `scores` con la anon key devuelve filas.
+- [x] Un `insert` con alias `ab` (2 caracteres) o `pepe!` falla por el `CHECK` de la BD.
+- [x] Un `insert` con `score = -1` o `score = 10000001` falla por el `CHECK` de la BD.
+- [x] `.env.template` documenta `SUPABASE_SERVICE_ROLE_KEY` sin valor; el valor real no aparece en ningún archivo versionado.
+- [x] `grep -rn "SUPABASE_SERVICE_ROLE_KEY" app` solo devuelve `app/lib/supabase/admin.ts`.
+- [x] `grep -rn "supabase/admin" app` no devuelve ningún archivo con `'use client'`.
+- [x] `app/data/games.ts` y `app/data/scores.ts` no existen; `grep -rn "seededScores\|data/games\|data/scores" app` no devuelve nada.
+- [x] `/biblioteca` muestra las 9 tarjetas en el mismo orden y con los mismos títulos, textos y coberturas que antes de esta spec.
+- [x] Los filtros por categoría de `/biblioteca` siguen funcionando sobre los datos de Supabase.
+- [x] `/juegos/caida` muestra 10 filas de puntajes reales de la tabla `scores`, ordenadas de mayor a menor.
+- [x] Las fechas del leaderboard se muestran como `DD/MM/YYYY` y son idénticas en el HTML del servidor y tras la hidratación (sin advertencia de hydration mismatch en consola).
+- [x] `/juegos/asteroides` muestra "AÚN NO HAY PUNTAJES — SÉ EL PRIMERO" en lugar del bloque de puntajes, sin errores en consola.
+- [x] `/juegos/id-inexistente` sigue mostrando la pantalla de `not-found.tsx`.
+- [x] `/salon` muestra las 9 pestañas y cambiar de pestaña no dispara ninguna petición de red (verificable en la pestaña Network de DevTools).
+- [x] La pestaña ASTEROIDES del salón muestra el estado vacío en vez del podio, sin errores en consola.
+- [x] Con exactamente 1 puntaje guardado en `asteroides`, el podio del salón renderiza solo el slot de oro y la tabla muestra 1 fila.
+- [x] `/juegos/asteroides/jugar` arranca la partida con el mismo comportamiento que en SPEC 05; `/juegos/caida/jugar` sigue mostrando "SIN CARTUCHO".
+- [x] Al terminar una partida de Asteroides, el overlay de GAME OVER muestra un campo de alias y un botón GUARDAR.
+- [x] El campo de alias convierte lo escrito a mayúsculas y no admite más de 12 caracteres.
+- [x] Guardar con alias válido muestra "PUESTO #N" con N igual a la posición real del puntaje en el ranking del juego.
+- [x] Guardar con alias de menos de 3 caracteres muestra un error en línea, no cierra el overlay y no inserta ninguna fila.
+- [x] Tras guardar y recargar, ese puntaje aparece en `/juegos/asteroides` y en la pestaña ASTEROIDES de `/salon`.
+- [x] Es posible reiniciar la partida sin guardar el puntaje.
+- [x] Guardar dos puntajes con el mismo alias produce dos filas distintas en el ranking, no una actualización.
 
 ## Decisiones
 

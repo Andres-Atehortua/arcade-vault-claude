@@ -82,15 +82,15 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
-- [ ] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr` como dependencias.
-- [ ] `.env.template` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` sin valores reales; ninguna de las dos aparece con valor en ningún archivo versionado.
-- [ ] `app/lib/supabase/client.ts` exporta `createClient()` que retorna un cliente de `createBrowserClient`.
-- [ ] `app/lib/supabase/server.ts` exporta un `createClient()` async que retorna un cliente de `createServerClient`, usando `cookies()` de `next/headers`.
-- [ ] `proxy.ts` existe en la raíz del proyecto (no `middleware.ts`), exporta la función `proxy` y un `config.matcher` que excluye assets estáticos.
-- [ ] Con `.env.local` configurado con credenciales reales, `npm run dev` arranca sin errores en consola relacionados con Supabase.
-- [ ] Navegar `/`, `/biblioteca`, `/salon`, `/auth` y `/juegos/caida` se comporta exactamente igual que antes de esta spec (sin cambios visuales ni funcionales).
-- [ ] `npx tsc --noEmit` pasa sin errores.
+- [x] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
+- [x] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr` como dependencias.
+- [x] `.env.template` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` sin valores reales; ninguna de las dos aparece con valor en ningún archivo versionado.
+- [x] `app/lib/supabase/client.ts` exporta `createClient()` que retorna un cliente de `createBrowserClient`.
+- [x] `app/lib/supabase/server.ts` exporta un `createClient()` async que retorna un cliente de `createServerClient`, usando `cookies()` de `next/headers`.
+- [x] `proxy.ts` existe en la raíz del proyecto (no `middleware.ts`), exporta la función `proxy` y un `config.matcher` que excluye assets estáticos.
+- [x] Con `.env.local` configurado con credenciales reales, `npm run dev` arranca sin errores en consola relacionados con Supabase.
+- [x] Navegar `/`, `/biblioteca`, `/salon`, `/auth` y `/juegos/caida` se comporta exactamente igual que antes de esta spec (sin cambios visuales ni funcionales).
+- [x] `npx tsc --noEmit` pasa sin errores.
 
 ## Decisiones
 

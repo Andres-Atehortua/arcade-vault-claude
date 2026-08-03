@@ -183,59 +183,59 @@ Cada paso deja el repo compilando y trae su propia verificación.
 
 **Integración y catálogo**
 
-- [ ] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores ni advertencias.
-- [ ] `supabase/migrations/` contiene `0004_add_game_tetris.sql` y `list_migrations` la reporta aplicada.
-- [ ] `select count(*) from public.games` devuelve `10`, con `position` de 1 a 10 sin huecos ni repetidos.
-- [ ] La fila `tetris` tiene `best = 0`, `plays = '0'`, `cat = 'PUZZLE'`, `color = 'green'`, `cover = 'cover-tetris'`.
-- [ ] La fila `caida` y sus puntajes sembrados quedan exactamente como estaban.
-- [ ] `/biblioteca` muestra la tarjeta de TETRIS con `.cover-tetris`, visualmente distinta de la de CAÍDA.
-- [ ] El filtro `PUZZLE` de `/biblioteca` incluye TETRIS.
-- [ ] `/juegos/tetris` renderiza la ficha completa (portada, tags, descripción, stat-strip, botón `JUGAR AHORA`).
-- [ ] `/juegos/tetris` muestra "AÚN NO HAY PUNTAJES — SÉ EL PRIMERO" antes de la primera partida guardada.
-- [ ] `/juegos/asteroides/jugar` funciona igual que antes del cambio de dispatch y del movimiento de `SaveScoreForm`.
-- [ ] `/juegos/caida/jugar` y el resto de juegos sin motor siguen mostrando "SIN CARTUCHO".
+- [x] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores ni advertencias.
+- [x] `supabase/migrations/` contiene `0004_add_game_tetris.sql` y `list_migrations` la reporta aplicada.
+- [x] `select count(*) from public.games` devuelve `10`, con `position` de 1 a 10 sin huecos ni repetidos.
+- [x] La fila `tetris` tiene `best = 0`, `plays = '0'`, `cat = 'PUZZLE'`, `color = 'green'`, `cover = 'cover-tetris'`.
+- [x] La fila `caida` y sus puntajes sembrados quedan exactamente como estaban.
+- [x] `/biblioteca` muestra la tarjeta de TETRIS con `.cover-tetris`, visualmente distinta de la de CAÍDA.
+- [x] El filtro `PUZZLE` de `/biblioteca` incluye TETRIS.
+- [x] `/juegos/tetris` renderiza la ficha completa (portada, tags, descripción, stat-strip, botón `JUGAR AHORA`).
+- [x] `/juegos/tetris` muestra "AÚN NO HAY PUNTAJES — SÉ EL PRIMERO" antes de la primera partida guardada.
+- [x] `/juegos/asteroides/jugar` funciona igual que antes del cambio de dispatch y del movimiento de `SaveScoreForm`.
+- [x] `/juegos/caida/jugar` y el resto de juegos sin motor siguen mostrando "SIN CARTUCHO".
 
 **Contrato del motor**
 
-- [ ] `engine.ts` no importa `react` ni `next` y no accede a `window`/`document` en el cuerpo del módulo.
-- [ ] Todo el estado de partida es de instancia: entrar y salir de `/juegos/tetris/jugar` tres veces seguidas arranca siempre una partida limpia, a velocidad normal.
-- [ ] El canvas de juego no dibuja puntos, líneas ni nivel; esos datos aparecen solo en el `player-hud`.
-- [ ] `/juegos/tetris/jugar` arranca la partida automáticamente al cargar.
-- [ ] La consola del navegador no muestra errores ni warnings de hidratación en `/juegos/tetris/jugar`.
+- [x] `engine.ts` no importa `react` ni `next` y no accede a `window`/`document` en el cuerpo del módulo.
+- [x] Todo el estado de partida es de instancia: entrar y salir de `/juegos/tetris/jugar` tres veces seguidas arranca siempre una partida limpia, a velocidad normal.
+- [x] El canvas de juego no dibuja puntos, líneas ni nivel; esos datos aparecen solo en el `player-hud`.
+- [x] `/juegos/tetris/jugar` arranca la partida automáticamente al cargar.
+- [x] La consola del navegador no muestra errores ni warnings de hidratación en `/juegos/tetris/jugar`.
 
 **Mecánica**
 
-- [ ] Las 8 piezas aparecen a lo largo de una partida, incluida la tuerca `N` (anillo 3×3 hueco).
-- [ ] `←`/`→` mueven la pieza y se detienen contra las paredes y contra el montón, sin atravesarlos.
-- [ ] `↑` o `X` rota en sentido horario; junto a una pared, el wall kick desplaza la pieza en vez de bloquear la rotación; si ningún offset cabe, la pieza no rota y nada se corrompe.
-- [ ] `↓` baja la pieza una fila y suma 1 punto; contra el montón, la fija.
-- [ ] `Espacio` la deja caer hasta el fondo, suma 2 puntos por celda recorrida y la fija de inmediato.
-- [ ] La pieza fantasma se dibuja atenuada exactamente donde caería la pieza actual, y se actualiza al mover y al rotar.
-- [ ] Completar una línea la elimina, desplaza hacia abajo lo que había encima y suma `[100, 300, 500, 800][n − 1] × nivel`.
-- [ ] Cuatro líneas simultáneas suman `800 × nivel` en un solo evento.
-- [ ] El contador de líneas es acumulado; el nivel es `floor(líneas / 10) + 1` y sube visiblemente en el HUD al cruzar cada múltiplo de 10.
-- [ ] La caída automática acelera al subir de nivel y nunca baja de 100 ms por fila.
-- [ ] La partida termina cuando la pieza nueva no cabe al aparecer, y el overlay de GAME OVER muestra el puntaje final.
-- [ ] El preview del HUD muestra siempre la pieza que sale a continuación, centrada, y coincide con la que aparece al fijar la actual.
+- [x] Las 8 piezas aparecen a lo largo de una partida, incluida la tuerca `N` (anillo 3×3 hueco).
+- [x] `←`/`→` mueven la pieza y se detienen contra las paredes y contra el montón, sin atravesarlos.
+- [x] `↑` o `X` rota en sentido horario; junto a una pared, el wall kick desplaza la pieza en vez de bloquear la rotación; si ningún offset cabe, la pieza no rota y nada se corrompe.
+- [x] `↓` baja la pieza una fila y suma 1 punto; contra el montón, la fija.
+- [x] `Espacio` la deja caer hasta el fondo, suma 2 puntos por celda recorrida y la fija de inmediato.
+- [x] La pieza fantasma se dibuja atenuada exactamente donde caería la pieza actual, y se actualiza al mover y al rotar.
+- [x] Completar una línea la elimina, desplaza hacia abajo lo que había encima y suma `[100, 300, 500, 800][n − 1] × nivel`.
+- [x] Cuatro líneas simultáneas suman `800 × nivel` en un solo evento.
+- [x] El contador de líneas es acumulado; el nivel es `floor(líneas / 10) + 1` y sube visiblemente en el HUD al cruzar cada múltiplo de 10.
+- [x] La caída automática acelera al subir de nivel y nunca baja de 100 ms por fila.
+- [x] La partida termina cuando la pieza nueva no cabe al aparecer, y el overlay de GAME OVER muestra el puntaje final.
+- [x] El preview del HUD muestra siempre la pieza que sale a continuación, centrada, y coincide con la que aparece al fijar la actual.
 
 **HUD y controles**
 
-- [ ] El HUD refleja en vivo puntos, líneas y nivel reales de la partida.
-- [ ] Botón `PAUSA` y tecla `P`: congelan la caída, cambian el texto del botón a `REANUDAR`, y al repetirlos la partida sigue donde quedó, con la misma pieza y posición.
-- [ ] Estando en game over, `PAUSA` y `P` no hacen nada.
-- [ ] Botón `FIN`: termina la partida de inmediato con el puntaje acumulado.
-- [ ] Botón `PANTALLA` y tecla `F`: ponen el `.crt` en pantalla completa y permiten volver.
-- [ ] Botón `SALIR` navega a `/juegos/tetris`.
-- [ ] Las flechas y la barra espaciadora no hacen scroll de la página durante la partida.
-- [ ] Mientras el input de alias tiene el foco, escribir no mueve ni rota la pieza.
-- [ ] En ventana angosta o con emulación táctil aparecen `◀ ▶ ▼ ↻ ⤓` y permiten jugar una partida completa sin teclado; en escritorio no se muestran.
+- [x] El HUD refleja en vivo puntos, líneas y nivel reales de la partida.
+- [x] Botón `PAUSA` y tecla `P`: congelan la caída, cambian el texto del botón a `REANUDAR`, y al repetirlos la partida sigue donde quedó, con la misma pieza y posición.
+- [x] Estando en game over, `PAUSA` y `P` no hacen nada.
+- [x] Botón `FIN`: termina la partida de inmediato con el puntaje acumulado.
+- [x] Botón `PANTALLA` y tecla `F`: ponen el `.crt` en pantalla completa y permiten volver.
+- [x] Botón `SALIR` navega a `/juegos/tetris`.
+- [x] Las flechas y la barra espaciadora no hacen scroll de la página durante la partida.
+- [x] Mientras el input de alias tiene el foco, escribir no mueve ni rota la pieza.
+- [x] En ventana angosta o con emulación táctil aparecen `◀ ▶ ▼ ↻ ⤓` y permiten jugar una partida completa sin teclado; en escritorio no se muestran.
 
 **Puntaje**
 
-- [ ] Al terminar la partida aparece el formulario de alias; guardar con alias válido muestra `PUESTO #N` con la posición real.
-- [ ] Guardar con alias de menos de 3 caracteres muestra un error en línea y no inserta ninguna fila.
-- [ ] El puntaje guardado aparece en `/juegos/tetris` y en la pestaña TETRIS de `/salon` tras recargar.
-- [ ] Es posible reiniciar la partida sin guardar el puntaje.
+- [x] Al terminar la partida aparece el formulario de alias; guardar con alias válido muestra `PUESTO #N` con la posición real.
+- [x] Guardar con alias de menos de 3 caracteres muestra un error en línea y no inserta ninguna fila.
+- [x] El puntaje guardado aparece en `/juegos/tetris` y en la pestaña TETRIS de `/salon` tras recargar.
+- [x] Es posible reiniciar la partida sin guardar el puntaje.
 
 ## Decisiones
 
