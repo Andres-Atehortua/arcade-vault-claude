@@ -108,25 +108,25 @@ Nota sobre el paso 6: el prototipo abre el detalle desde la tarjeta con un `onCl
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` y `npm run lint` terminan sin errores.
-- [ ] `/` muestra el hero, la barra de búsqueda, los 5 chips de categoría y 8 tarjetas de juego.
-- [ ] Escribir "cai" en la búsqueda deja visible solo la tarjeta de CAÍDA.
-- [ ] Pulsar el chip PUZZLE deja visible solo CAÍDA; pulsar TODOS restaura las 8 tarjetas.
-- [ ] Una búsqueda sin resultados muestra el bloque "NO HAY RESULTADOS".
-- [ ] Hacer clic en una tarjeta navega a `/juegos/<id>` de ese juego.
-- [ ] `/juegos/caida` muestra título, descripción larga, los tres bloques de `stat-strip` y 10 filas de puntuaciones ordenadas de mayor a menor.
-- [ ] `/juegos/id-inexistente` muestra la página `not-found` con enlace de vuelta a `/`.
-- [ ] `JUGAR AHORA` en la ficha navega a `/juegos/<id>/jugar`.
-- [ ] En `/juegos/caida/jugar` la puntuación se queda en `0` durante al menos 10 segundos y no aparece ningún modal.
-- [ ] En `/juegos/caida/jugar` los botones `PAUSA` y `FIN` están `disabled` y `SALIR` vuelve a `/juegos/caida`.
-- [ ] En `/auth`, la tab CREAR CUENTA muestra el campo de correo y la tab INICIAR SESIÓN lo oculta.
-- [ ] Enviar el formulario de `/auth` navega a `/` y el Nav sigue mostrando "Iniciar Sesión".
-- [ ] `/salon` muestra el podio de tres puestos y una tabla de 12 filas, sin ninguna fila "TU MEJOR MARCA".
-- [ ] Cambiar de chip en `/salon` reemplaza el contenido del podio y de la tabla.
-- [ ] El Nav marca como activo el enlace correspondiente a la ruta actual, incluidas `/juegos/<id>` y `/juegos/<id>/jugar` (que activan Biblioteca).
-- [ ] A 390 px de ancho, el botón hamburguesa abre el panel lateral y navegar por él lo cierra.
-- [ ] La consola del navegador no muestra errores de hidratación en ninguna de las cinco rutas.
-- [ ] Recargar `/juegos/caida` y `/salon` produce exactamente las mismas puntuaciones que antes de recargar.
+- [x] `npm run build` y `npm run lint` terminan sin errores.
+- [x] `/` muestra el hero, la barra de búsqueda, los 5 chips de categoría y 8 tarjetas de juego.
+- [x] Escribir "cai" en la búsqueda deja visible solo la tarjeta de CAÍDA.
+- [x] Pulsar el chip PUZZLE deja visible solo CAÍDA; pulsar TODOS restaura las 8 tarjetas.
+- [x] Una búsqueda sin resultados muestra el bloque "NO HAY RESULTADOS".
+- [x] Hacer clic en una tarjeta navega a `/juegos/<id>` de ese juego.
+- [x] `/juegos/caida` muestra título, descripción larga, los tres bloques de `stat-strip` y 10 filas de puntuaciones ordenadas de mayor a menor.
+- [x] `/juegos/id-inexistente` muestra la página `not-found` con enlace de vuelta a `/`.
+- [x] `JUGAR AHORA` en la ficha navega a `/juegos/<id>/jugar`.
+- [x] En `/juegos/caida/jugar` la puntuación se queda en `0` durante al menos 10 segundos y no aparece ningún modal.
+- [x] En `/juegos/caida/jugar` los botones `PAUSA` y `FIN` están `disabled` y `SALIR` vuelve a `/juegos/caida`.
+- [x] En `/auth`, la tab CREAR CUENTA muestra el campo de correo y la tab INICIAR SESIÓN lo oculta.
+- [x] Enviar el formulario de `/auth` navega a `/` y el Nav sigue mostrando "Iniciar Sesión".
+- [x] `/salon` muestra el podio de tres puestos y una tabla de 12 filas, sin ninguna fila "TU MEJOR MARCA".
+- [x] Cambiar de chip en `/salon` reemplaza el contenido del podio y de la tabla.
+- [x] El Nav marca como activo el enlace correspondiente a la ruta actual, incluidas `/juegos/<id>` y `/juegos/<id>/jugar` (que activan Biblioteca).
+- [x] A 390 px de ancho, el botón hamburguesa abre el panel lateral y navegar por él lo cierra.
+- [x] La consola del navegador no muestra errores de hidratación en ninguna de las cinco rutas.
+- [x] Recargar `/juegos/caida` y `/salon` produce exactamente las mismas puntuaciones que antes de recargar.
 
 ## Decisiones
 

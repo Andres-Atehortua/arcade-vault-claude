@@ -127,23 +127,23 @@ Los controles táctiles (D-pad, botón de disparo) no tienen modelo de datos: so
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
-- [ ] `npx tsc --noEmit` pasa, incluyendo `app/lib/games/asteroides/engine.ts` y `player.tsx`.
-- [ ] `/biblioteca` muestra una novena tarjeta "ASTEROIDES" (SHOOTER, cyan) con su propio cover, distinto del de "Rocas".
-- [ ] `/juegos/asteroides` renderiza la ficha del juego (portada, tags, descripción, stat-strip, botón `JUGAR AHORA`) igual que cualquier otro juego, sin cambios en `page.tsx` de detalle.
-- [ ] `/juegos/rocas` y `/juegos/rocas/jugar` no cambian respecto a su estado actual (placeholder estático "SIN CARTUCHO").
-- [ ] `/juegos/asteroides/jugar` arranca el juego automáticamente al cargar, con 3 vidas, nivel 1 y puntuación 0.
-- [ ] Con teclado: `←`/`→` rotan la nave, `↑` propulsa, `Espacio` dispara. La nave envuelve los bordes del canvas (toroidal).
-- [ ] Los asteroides grandes se dividen en medianos al ser destruidos, y los medianos en pequeños; los pequeños no se dividen.
-- [ ] El HUD externo (`player-hud`) refleja en vivo la puntuación, las vidas y el nivel reales de la partida, sin duplicarse dentro del canvas.
-- [ ] Al recoger el power-up `3x`, la nave dispara tres balas en abanico durante su duración y el HUD muestra el indicador correspondiente.
-- [ ] Botón `PAUSA`: congela el juego, cambia su texto a `REANUDAR`, y al presionarlo de nuevo la partida continúa exactamente donde quedó.
-- [ ] Botón `FIN`: termina la partida de inmediato mostrando el overlay de GAME OVER con el puntaje acumulado hasta ese momento.
-- [ ] Al perder las 3 vidas, aparece el overlay de GAME OVER con el puntaje final; tanto `Espacio` como un tap/click sobre el canvas reinician la partida sin recargar la página.
-- [ ] Botón `SALIR` navega a `/juegos/asteroides`.
-- [ ] En una ventana angosta o con emulación táctil, aparecen el D-pad (rotar izq/der + propulsar) y el botón de disparo, y accionarlos mueve y dispara la nave sin usar teclado; en escritorio (ancho normal, sin puntero táctil) esos controles no se muestran.
-- [ ] La consola del navegador no muestra errores ni warnings de hidratación en `/juegos/asteroides/jugar`.
-- [ ] El leaderboard de `/juegos/asteroides` sigue mostrando `seededScores` ficticio, sin mezclarse con el puntaje real de las partidas jugadas.
+- [x] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
+- [x] `npx tsc --noEmit` pasa, incluyendo `app/lib/games/asteroides/engine.ts` y `player.tsx`.
+- [x] `/biblioteca` muestra una novena tarjeta "ASTEROIDES" (SHOOTER, cyan) con su propio cover, distinto del de "Rocas".
+- [x] `/juegos/asteroides` renderiza la ficha del juego (portada, tags, descripción, stat-strip, botón `JUGAR AHORA`) igual que cualquier otro juego, sin cambios en `page.tsx` de detalle.
+- [x] `/juegos/rocas` y `/juegos/rocas/jugar` no cambian respecto a su estado actual (placeholder estático "SIN CARTUCHO").
+- [x] `/juegos/asteroides/jugar` arranca el juego automáticamente al cargar, con 3 vidas, nivel 1 y puntuación 0.
+- [x] Con teclado: `←`/`→` rotan la nave, `↑` propulsa, `Espacio` dispara. La nave envuelve los bordes del canvas (toroidal).
+- [x] Los asteroides grandes se dividen en medianos al ser destruidos, y los medianos en pequeños; los pequeños no se dividen.
+- [x] El HUD externo (`player-hud`) refleja en vivo la puntuación, las vidas y el nivel reales de la partida, sin duplicarse dentro del canvas.
+- [x] Al recoger el power-up `3x`, la nave dispara tres balas en abanico durante su duración y el HUD muestra el indicador correspondiente.
+- [x] Botón `PAUSA`: congela el juego, cambia su texto a `REANUDAR`, y al presionarlo de nuevo la partida continúa exactamente donde quedó.
+- [x] Botón `FIN`: termina la partida de inmediato mostrando el overlay de GAME OVER con el puntaje acumulado hasta ese momento.
+- [x] Al perder las 3 vidas, aparece el overlay de GAME OVER con el puntaje final; tanto `Espacio` como un tap/click sobre el canvas reinician la partida sin recargar la página.
+- [x] Botón `SALIR` navega a `/juegos/asteroides`.
+- [x] En una ventana angosta o con emulación táctil, aparecen el D-pad (rotar izq/der + propulsar) y el botón de disparo, y accionarlos mueve y dispara la nave sin usar teclado; en escritorio (ancho normal, sin puntero táctil) esos controles no se muestran.
+- [x] La consola del navegador no muestra errores ni warnings de hidratación en `/juegos/asteroides/jugar`.
+- [x] El leaderboard de `/juegos/asteroides` sigue mostrando `seededScores` ficticio, sin mezclarse con el puntaje real de las partidas jugadas.
 
 ## Decisiones
 

@@ -102,26 +102,26 @@ El texto de las cuatro tarjetas de características, las tres estadísticas, la 
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
-- [ ] `/` muestra el hero a pantalla completa con el eyebrow `▸ INSERTA UNA MONEDA`, el título de tres líneas y los dos botones.
-- [ ] `▶ EXPLORAR JUEGOS`, `VER TODOS LOS JUEGOS →` e `INSERTAR MONEDA →` navegan a `/biblioteca`.
-- [ ] `✦ CREAR CUENTA` y `EMPEZAR GRATIS →` navegan a `/auth`; `VER SALÓN →` navega a `/salon`.
-- [ ] La sección `// 01` muestra exactamente 4 tarjetas de características, cada una con su icono SVG y su color (cyan, amarillo, magenta, verde).
-- [ ] La sección `// 02` muestra exactamente 6 mini-tarjetas y hacer clic en la primera navega a `/juegos/<id>` de ese juego.
-- [ ] La franja de estadísticas muestra los tres bloques (`12+`, `MILES`, `GLOBAL`).
-- [ ] La sección `// 03` muestra 7 filas en el ticker y 5 en el top, con las tres primeras del top en oro, plata y bronce.
-- [ ] La sección `// 04` muestra la tarjeta de plan con 6 beneficios y las 3 preguntas del FAQ.
-- [ ] Al cargar `/` y desplazarse, cada sección posterior al hero pasa de opacidad 0 a visible; ninguna se queda invisible tras el scroll.
-- [ ] Con `prefers-reduced-motion: reduce` activado, todas las secciones están visibles nada más cargar, sin desplazamiento.
-- [ ] `/biblioteca` renderiza el hero `ARCADE VAULT`, la búsqueda, los 5 chips y las 8 tarjetas, idéntica a como estaba en `/` antes de esta spec.
-- [ ] `/` ya no muestra la biblioteca y la antigua URL no se conserva con redirect.
-- [ ] El nav muestra tres enlaces: `Inicio`, `Biblioteca` y `Salón de la Fama`, en la barra y en el panel móvil.
-- [ ] En `/` está activo `Inicio`; en `/biblioteca` y en `/juegos/caida` está activo `Biblioteca`; en `/salon`, `Salón de la Fama`.
-- [ ] `VOLVER AL VAULT` en `/juegos/caida` navega a `/biblioteca`.
-- [ ] Enviar el formulario de `/auth` navega a `/biblioteca`.
-- [ ] A 390 px de ancho: las características quedan en una columna, el rail en dos, y el hero no produce scroll horizontal.
-- [ ] La consola del navegador no muestra errores de hidratación en `/` ni en `/biblioteca`.
-- [ ] `.playwright-evidence/` contiene 16 capturas (7 secciones × 2 anchos + `/biblioteca` × 2) y `git status` no la lista.
+- [x] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
+- [x] `/` muestra el hero a pantalla completa con el eyebrow `▸ INSERTA UNA MONEDA`, el título de tres líneas y los dos botones.
+- [x] `▶ EXPLORAR JUEGOS`, `VER TODOS LOS JUEGOS →` e `INSERTAR MONEDA →` navegan a `/biblioteca`.
+- [x] `✦ CREAR CUENTA` y `EMPEZAR GRATIS →` navegan a `/auth`; `VER SALÓN →` navega a `/salon`.
+- [x] La sección `// 01` muestra exactamente 4 tarjetas de características, cada una con su icono SVG y su color (cyan, amarillo, magenta, verde).
+- [x] La sección `// 02` muestra exactamente 6 mini-tarjetas y hacer clic en la primera navega a `/juegos/<id>` de ese juego.
+- [x] La franja de estadísticas muestra los tres bloques (`12+`, `MILES`, `GLOBAL`).
+- [x] La sección `// 03` muestra 7 filas en el ticker y 5 en el top, con las tres primeras del top en oro, plata y bronce.
+- [x] La sección `// 04` muestra la tarjeta de plan con 6 beneficios y las 3 preguntas del FAQ.
+- [x] Al cargar `/` y desplazarse, cada sección posterior al hero pasa de opacidad 0 a visible; ninguna se queda invisible tras el scroll.
+- [x] Con `prefers-reduced-motion: reduce` activado, todas las secciones están visibles nada más cargar, sin desplazamiento.
+- [x] `/biblioteca` renderiza el hero `ARCADE VAULT`, la búsqueda, los 5 chips y las 8 tarjetas, idéntica a como estaba en `/` antes de esta spec.
+- [x] `/` ya no muestra la biblioteca y la antigua URL no se conserva con redirect.
+- [x] El nav muestra tres enlaces: `Inicio`, `Biblioteca` y `Salón de la Fama`, en la barra y en el panel móvil.
+- [x] En `/` está activo `Inicio`; en `/biblioteca` y en `/juegos/caida` está activo `Biblioteca`; en `/salon`, `Salón de la Fama`.
+- [x] `VOLVER AL VAULT` en `/juegos/caida` navega a `/biblioteca`.
+- [x] Enviar el formulario de `/auth` navega a `/biblioteca`.
+- [x] A 390 px de ancho: las características quedan en una columna, el rail en dos, y el hero no produce scroll horizontal.
+- [x] La consola del navegador no muestra errores de hidratación en `/` ni en `/biblioteca`.
+- [x] `.playwright-evidence/` contiene 16 capturas (7 secciones × 2 anchos + `/biblioteca` × 2) y `git status` no la lista.
 
 ## Decisiones
 

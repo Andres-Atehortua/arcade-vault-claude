@@ -12,7 +12,7 @@ export interface GameRow {
   /** Paragraph for the detail page */
   long: string;
   cat: GameCategory;
-  /** CSS class of the cover gradient, e.g. "cover-bricks" */
+  /** CSS class of the cover gradient, e.g. "cover-rompebloques" */
   cover: string;
   /** Accent of the JUGAR button */
   color: GameAccent;

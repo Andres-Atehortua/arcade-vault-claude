@@ -80,22 +80,22 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
-- [ ] `/acerca-de` muestra el hero con el kicker `▸ ACERCA DE`, el título, el texto de misión y los 3 highlights con sus iconos y colores (magenta, cyan, verde).
-- [ ] El separador decorativo entre hero y contacto se renderiza con sus píxeles animados.
-- [ ] La sección de contacto muestra el título `CONTÁCTANOS`, el subtítulo, los 3 tips, y el formulario con campos Nombre/Correo electrónico/Mensaje.
-- [ ] Enviar el formulario con algún campo vacío dispara el `shake` y no llama a la Server Action.
-- [ ] Enviar el formulario con un correo de formato inválido muestra el error correspondiente y no llama a la Server Action.
-- [ ] Enviar el formulario con datos válidos muestra el estado `loading`, luego `success` con el terminal `VAULT-OS // TERMINAL` y el nombre en mayúsculas.
-- [ ] El envío válido genera un correo real recibido en `andres.lopez.ate@gmail.com` con los tres campos del formulario.
-- [ ] Si la Server Action devuelve error (ej. Resend caído o API key inválida), el formulario muestra el panel de error sin perder los datos escritos, y permite reintentar.
-- [ ] El campo honeypot es invisible y no interactuable por teclado o mouse en uso normal; si se rellena programáticamente, el envío se descarta en silencio (no llega correo, pero la UI puede mostrar éxito para no delatar la trampa al bot).
-- [ ] El nav muestra 4 enlaces: Inicio, Biblioteca, Salón de la Fama, Acerca de — en ese orden, en la barra y en el panel móvil.
-- [ ] En `/acerca-de` está activo el enlace "Acerca de"; en el resto de rutas no lo está.
-- [ ] A 390px de ancho: los highlights quedan en una columna, el formulario y la intro de contacto se apilan verticalmente, sin scroll horizontal.
-- [ ] La consola del navegador no muestra errores de hidratación en `/acerca-de`.
-- [ ] `RESEND_API_KEY` no aparece en ningún archivo versionado; `.env.example` documenta la variable sin valor real.
-- [ ] `.playwright-evidence/` contiene las capturas de los 4 estados del formulario en ambos anchos, y `git status` no la lista.
+- [x] `npm run build` y `npm run lint` terminan sin errores ni advertencias.
+- [x] `/acerca-de` muestra el hero con el kicker `▸ ACERCA DE`, el título, el texto de misión y los 3 highlights con sus iconos y colores (magenta, cyan, verde).
+- [x] El separador decorativo entre hero y contacto se renderiza con sus píxeles animados.
+- [x] La sección de contacto muestra el título `CONTÁCTANOS`, el subtítulo, los 3 tips, y el formulario con campos Nombre/Correo electrónico/Mensaje.
+- [x] Enviar el formulario con algún campo vacío dispara el `shake` y no llama a la Server Action.
+- [x] Enviar el formulario con un correo de formato inválido muestra el error correspondiente y no llama a la Server Action.
+- [x] Enviar el formulario con datos válidos muestra el estado `loading`, luego `success` con el terminal `VAULT-OS // TERMINAL` y el nombre en mayúsculas.
+- [x] El envío válido genera un correo real recibido en `andres.lopez.ate@gmail.com` con los tres campos del formulario.
+- [x] Si la Server Action devuelve error (ej. Resend caído o API key inválida), el formulario muestra el panel de error sin perder los datos escritos, y permite reintentar.
+- [x] El campo honeypot es invisible y no interactuable por teclado o mouse en uso normal; si se rellena programáticamente, el envío se descarta en silencio (no llega correo, pero la UI puede mostrar éxito para no delatar la trampa al bot).
+- [x] El nav muestra 4 enlaces: Inicio, Biblioteca, Salón de la Fama, Acerca de — en ese orden, en la barra y en el panel móvil.
+- [x] En `/acerca-de` está activo el enlace "Acerca de"; en el resto de rutas no lo está.
+- [x] A 390px de ancho: los highlights quedan en una columna, el formulario y la intro de contacto se apilan verticalmente, sin scroll horizontal.
+- [x] La consola del navegador no muestra errores de hidratación en `/acerca-de`.
+- [x] `RESEND_API_KEY` no aparece en ningún archivo versionado; `.env.example` documenta la variable sin valor real.
+- [x] `.playwright-evidence/` contiene las capturas de los 4 estados del formulario en ambos anchos, y `git status` no la lista.
 
 ## Decisiones
 
