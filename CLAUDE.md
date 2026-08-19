@@ -26,6 +26,10 @@ Node version is pinned via `.nvmrc` (26.5).
 ## Skills
 
 - Use always `/frontend-design` to design the user interface.
+- Cuando **aún no está decidido qué juego hacer**, usa el agente `@game-planner`
+  (`.claude/agents/game-planner.md`): compara candidatos, decide cuál encaja y
+  registra la decisión en `references/games-suggestions/`. Su salida es el
+  insumo de `/arcade-game-spec`.
 - Para **añadir un juego nuevo** usa la skill local `/arcade-game-spec` (`.claude/skills/arcade-game-spec/`): ya conoce el contrato de motor + reproductor + catálogo + leaderboard y escribe `specs/NN-<slug>.md`. Su `references/architecture.md` es la fuente de verdad de ese contrato.
 - Para features que **no** son un juego (páginas, auth, filtros, formularios) usa `/spec` y luego `/spec-impl`.
 
