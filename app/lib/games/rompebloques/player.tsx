@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 
 import type { GameRow } from '@/app/lib/supabase/types';
 import { RompebloquesGame, type GameSnapshot } from './engine';
 import SaveScoreForm from '../save-score-form';
+import { useCanFullscreen } from '../use-can-fullscreen';
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -37,6 +38,8 @@ const RompebloquesPlayer = ({ game }: { game: GameRow }) => {
   const justPressedRef = useRef<Record<string, boolean>>({});
   const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // iOS Safari has no Fullscreen API, so the PANTALLA button is hidden there.
+  const canFullscreen = useCanFullscreen();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -171,7 +174,7 @@ const RompebloquesPlayer = ({ game }: { game: GameRow }) => {
     <div className="av-player fade-in">
       <div className="player-hud">
         <div className="hud-stats">
-          <div className="hud-stat">
+          <div className="hud-stat player">
             <div className="l">Jugador</div>
             <div className="v plain">INVITADO</div>
           </div>
@@ -195,9 +198,11 @@ const RompebloquesPlayer = ({ game }: { game: GameRow }) => {
           <button className="btn magenta" onClick={forceEnd} disabled={isFinished}>
             FIN
           </button>
-          <button className="btn ghost" onClick={toggleFullscreen}>
-            {isFullscreen ? 'VENTANA' : 'PANTALLA'}
-          </button>
+          {canFullscreen && (
+            <button className="btn ghost" onClick={toggleFullscreen}>
+              {isFullscreen ? 'VENTANA' : 'PANTALLA'}
+            </button>
+          )}
           <Link className="btn ghost" href={`/juegos/${game.id}`}>
             SALIR
           </Link>

@@ -60,7 +60,6 @@ body {
   font-size: 14px;
   line-height: 1.5;
   letter-spacing: 0.01em;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -1188,7 +1187,7 @@ a {
 .av-player {
   /* Vertical chrome above/below the CRT screen: sticky nav, own margin, HUD,
      .crt padding and .crt-bottom. Drives how tall the screen is allowed to be. */
-  --player-chrome: 300px;
+  --player-chrome: calc(300px + var(--touch-pad-h, 0px));
   max-width: 1100px;
   margin: 24px auto;
   padding: 0 24px 32px;
@@ -2013,7 +2012,7 @@ a {
 /* Short viewports (laptops): trim the chrome so HUD + screen share the fold. */
 @media (max-height: 800px) {
   .av-player {
-    --player-chrome: 270px;
+    --player-chrome: calc(270px + var(--touch-pad-h, 0px));
     margin: 12px auto;
     padding: 0 16px 16px;
   }
@@ -2030,6 +2029,176 @@ a {
   }
   .crt-bottom {
     display: none;
+  }
+}
+
+/* Narrow screens (phones, portrait): compact player chrome so HUD + screen
+   (+ touch pad, which adds --touch-pad-h) fit in 100svh without horizontal
+   overflow. The global nav is dropped while playing; SALIR stays in the HUD. */
+@media (max-width: 720px) {
+  body:has(.av-player) .av-nav {
+    display: none;
+  }
+  .av-player {
+    /* HUD (~84px) + own margins + .crt padding, plus the pad when present. */
+    --player-chrome: calc(124px + var(--touch-pad-h, 0px));
+    margin: 8px auto;
+    padding: 0 12px 12px;
+  }
+  .player-hud {
+    gap: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .hud-stats {
+    flex-wrap: nowrap;
+    gap: 14px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .hud-stat {
+    gap: 2px;
+  }
+  .hud-stat.player {
+    display: none;
+  }
+  .hud-stat .l {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+  .hud-stat .v {
+    font-size: 12px;
+  }
+  .hud-stat.next canvas {
+    width: 32px;
+    height: 32px;
+  }
+  .hud-actions {
+    width: 100%;
+    gap: 6px;
+  }
+  .hud-actions .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 4px;
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .crt {
+    padding: 10px;
+    border-radius: 18px;
+    max-width: calc((100svh - var(--player-chrome)) * 4 / 3 + 20px);
+  }
+  .crt-bottom {
+    display: none;
+  }
+}
+
+/* ===== ARCADE TOUCH CONTROLS ===== */
+/* On-screen pad in its own band under the .crt, never over the canvas. Only touch-first
+   devices get it: a narrow desktop window with a mouse keeps the keyboard-only layout. */
+.touch-pad {
+  display: none;
+}
+@media (pointer: coarse) {
+  /* Reserve the pad's height so the CRT shrinks instead of pushing the pad off-screen. */
+  .av-player:has(.touch-pad.row) {
+    --touch-pad-h: 104px;
+  }
+  .av-player:has(.touch-pad.cross) {
+    --touch-pad-h: 184px;
+  }
+  .touch-pad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 560px;
+    margin: 12px auto 0;
+    padding: 0 4px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .touch-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .touch-pad.cross {
+    justify-content: center;
+  }
+  /* 4-direction cross: buttons placed by the key they send, whatever their order. */
+  .touch-pad.cross .touch-group.left {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    grid-template-areas:
+      '. up .'
+      'left . right'
+      '. down .';
+    gap: 4px;
+  }
+  .touch-pad.cross .touch-btn {
+    width: 56px;
+    height: 56px;
+  }
+  .touch-pad.cross [data-code='ArrowUp'] {
+    grid-area: up;
+  }
+  .touch-pad.cross [data-code='ArrowLeft'] {
+    grid-area: left;
+  }
+  .touch-pad.cross [data-code='ArrowRight'] {
+    grid-area: right;
+  }
+  .touch-pad.cross [data-code='ArrowDown'] {
+    grid-area: down;
+  }
+  .touch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Shrinks on 360px phones so five buttons (Tetris) still fit in one row. */
+    width: clamp(46px, 14vw, 56px);
+    height: clamp(46px, 14vw, 56px);
+    padding: 0;
+    border: 1px solid var(--cyan);
+    border-radius: 14px;
+    background: rgba(0, 245, 255, 0.06);
+    color: var(--cyan);
+    font-family: var(--pixel);
+    font-size: 18px;
+    line-height: 1;
+    text-shadow: 0 0 6px rgba(0, 245, 255, 0.6);
+    box-shadow: inset 0 0 12px rgba(0, 245, 255, 0.12);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    transition:
+      transform 60ms ease,
+      background 60ms ease;
+  }
+  .touch-btn.lg {
+    width: clamp(64px, 20vw, 80px);
+    height: clamp(64px, 20vw, 80px);
+    border-radius: 50%;
+    border-color: var(--magenta);
+    background: rgba(255, 0, 110, 0.08);
+    color: var(--magenta);
+    font-size: 22px;
+    text-shadow: 0 0 6px rgba(255, 0, 110, 0.6);
+    box-shadow: inset 0 0 14px rgba(255, 0, 110, 0.18);
+  }
+  .touch-btn.is-pressed {
+    transform: scale(0.94);
+    background: rgba(0, 245, 255, 0.22);
+  }
+  .touch-btn.lg.is-pressed {
+    background: rgba(255, 0, 110, 0.3);
   }
 }
 
@@ -2566,7 +2735,7 @@ a {
 }
 @media (max-width: 900px) {
   .activity-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .activity-card {
@@ -2708,7 +2877,7 @@ a {
 }
 .top-row {
   display: grid;
-  grid-template-columns: 36px 1fr auto auto;
+  grid-template-columns: 36px minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
   padding: 8px 0;
@@ -2724,6 +2893,9 @@ a {
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .tp-s {
   font-family: var(--pixel);
