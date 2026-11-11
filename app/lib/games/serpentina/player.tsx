@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import SaveScoreForm from '../save-score-form';
 import { SerpentinaGame, type GameSnapshot } from './engine';
@@ -157,35 +157,6 @@ const SerpentinaPlayer = ({ game }: { game: GameRow }) => {
     setSnapshot(instance.getSnapshot());
   };
 
-  /**
-   * Touch buttons write into the very same `keys`/`justPressed` the engine reads,
-   * so they simulate keystrokes instead of opening a second input path. The key
-   * each button stands for travels in `data-code`, which keeps the refs out of
-   * render and inside the event handlers.
-   */
-  const onTouchPress = (event: PointerEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const code = event.currentTarget.dataset.code;
-    if (!code) return;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    if (!keysRef.current[code]) justPressedRef.current[code] = true;
-    keysRef.current[code] = true;
-  };
-
-  const onTouchRelease = (event: PointerEvent<HTMLButtonElement>) => {
-    const code = event.currentTarget.dataset.code;
-    if (!code) return;
-    keysRef.current[code] = false;
-  };
-
-  const touchHandlers = {
-    onPointerDown: onTouchPress,
-    onPointerUp: onTouchRelease,
-    onPointerCancel: onTouchRelease,
-    onPointerLeave: onTouchRelease,
-    onContextMenu: (event: MouseEvent) => event.preventDefault(),
-  };
-
   return (
     <div className="av-player fade-in">
       <div className="player-hud">
@@ -225,24 +196,6 @@ const SerpentinaPlayer = ({ game }: { game: GameRow }) => {
 
           {/* Unmounts on restart, so the next run always starts with an empty field. */}
           {isGameOver && <SaveScoreForm gameId={game.id} score={snapshot.score} />}
-
-          {/* Touch controls: same keys the engine already reads, no separate input path */}
-          <div className="touch-controls dpad">
-            <div className="dpad-cross">
-              <button className="touch-btn up" aria-label="Mover arriba" data-code="ArrowUp" {...touchHandlers}>
-                ▲
-              </button>
-              <button className="touch-btn left" aria-label="Mover a la izquierda" data-code="ArrowLeft" {...touchHandlers}>
-                ◀
-              </button>
-              <button className="touch-btn right" aria-label="Mover a la derecha" data-code="ArrowRight" {...touchHandlers}>
-                ▶
-              </button>
-              <button className="touch-btn down" aria-label="Mover abajo" data-code="ArrowDown" {...touchHandlers}>
-                ▼
-              </button>
-            </div>
-          </div>
         </div>
         <div className="crt-bottom">
           <span className="led">EN PARTIDA</span>
