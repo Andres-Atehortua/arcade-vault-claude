@@ -5,12 +5,27 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import { AsteroidsGame, type GameSnapshot } from './engine';
 import SaveScoreForm from '../save-score-form';
+import TouchPad, { type TouchLayout } from '../touch-pad';
+import { useCanFullscreen } from '../use-can-fullscreen';
 
 const WIDTH = 800;
 const HEIGHT = 600;
 
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'];
+
+/** Touch pad: rotate on the left thumb, thrust + fire on the right; held together via multitouch. */
+const TOUCH_LAYOUT: TouchLayout = {
+  variant: 'row',
+  left: [
+    { code: 'ArrowLeft', label: '◀', ariaLabel: 'Girar a la izquierda' },
+    { code: 'ArrowRight', label: '▶', ariaLabel: 'Girar a la derecha' },
+  ],
+  right: [
+    { code: 'ArrowUp', label: '▲', ariaLabel: 'Propulsar' },
+    { code: 'Space', label: '●', ariaLabel: 'Disparar', size: 'lg' },
+  ],
+};
 
 const INITIAL_SNAPSHOT: GameSnapshot = {
   score: 0,
@@ -42,6 +57,8 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
   const justPressedRef = useRef<Record<string, boolean>>({});
   const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // iOS Safari has no Fullscreen API, so the PANTALLA button is hidden there.
+  const canFullscreen = useCanFullscreen();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -167,7 +184,7 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
     <div className="av-player fade-in">
       <div className="player-hud">
         <div className="hud-stats">
-          <div className="hud-stat">
+          <div className="hud-stat player">
             <div className="l">Jugador</div>
             <div className="v plain">INVITADO</div>
           </div>
@@ -197,9 +214,11 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
           <button className="btn magenta" onClick={forceEnd} disabled={isGameOver}>
             FIN
           </button>
-          <button className="btn ghost" onClick={toggleFullscreen}>
-            {isFullscreen ? 'VENTANA' : 'PANTALLA'}
-          </button>
+          {canFullscreen && (
+            <button className="btn ghost" onClick={toggleFullscreen}>
+              {isFullscreen ? 'VENTANA' : 'PANTALLA'}
+            </button>
+          )}
           <Link className="btn ghost" href={`/juegos/${game.id}`}>
             SALIR
           </Link>
@@ -219,6 +238,7 @@ const AsteroidesPlayer = ({ game }: { game: GameRow }) => {
           <span>CARGA · 100 %</span>
         </div>
       </div>
+      <TouchPad layout={TOUCH_LAYOUT} keysRef={keysRef} justPressedRef={justPressedRef} />
     </div>
   );
 };

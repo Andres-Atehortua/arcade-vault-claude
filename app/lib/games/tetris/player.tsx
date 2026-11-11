@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import SaveScoreForm from '../save-score-form';
+import TouchPad, { type TouchLayout } from '../touch-pad';
+import { useCanFullscreen } from '../use-can-fullscreen';
 import { PIECE_COLORS, PIECE_SHAPES, TetrisGame, type GameSnapshot } from './engine';
 
 const WIDTH = 300;
@@ -15,6 +17,23 @@ const PREVIEW_SIZE = PREVIEW_CELL * 4;
 
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'KeyX', 'KeyP'];
+
+/**
+ * Touch pad: move + soft drop on the left, rotate + hard drop on the right. The movement
+ * buttons only hold their key; the engine derives auto-repeat from it (`repeats`).
+ */
+const TOUCH_LAYOUT: TouchLayout = {
+  variant: 'row',
+  left: [
+    { code: 'ArrowLeft', label: '◀', ariaLabel: 'Mover a la izquierda', repeat: true },
+    { code: 'ArrowRight', label: '▶', ariaLabel: 'Mover a la derecha', repeat: true },
+    { code: 'ArrowDown', label: '▼', ariaLabel: 'Bajar', repeat: true },
+  ],
+  right: [
+    { code: 'ArrowUp', label: '⟳', ariaLabel: 'Rotar' },
+    { code: 'Space', label: '⤓', ariaLabel: 'Caída instantánea', size: 'lg' },
+  ],
+};
 
 const INITIAL_SNAPSHOT: GameSnapshot = {
   score: 0,
@@ -43,6 +62,8 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
   const justPressedRef = useRef<Record<string, boolean>>({});
   const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // iOS Safari has no Fullscreen API, so the PANTALLA button is hidden there.
+  const canFullscreen = useCanFullscreen();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -213,7 +234,7 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
     <div className="av-player fade-in">
       <div className="player-hud">
         <div className="hud-stats">
-          <div className="hud-stat">
+          <div className="hud-stat player">
             <div className="l">Jugador</div>
             <div className="v plain">INVITADO</div>
           </div>
@@ -241,9 +262,11 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
           <button className="btn magenta" onClick={forceEnd} disabled={isGameOver}>
             FIN
           </button>
-          <button className="btn ghost" onClick={toggleFullscreen}>
-            {isFullscreen ? 'VENTANA' : 'PANTALLA'}
-          </button>
+          {canFullscreen && (
+            <button className="btn ghost" onClick={toggleFullscreen}>
+              {isFullscreen ? 'VENTANA' : 'PANTALLA'}
+            </button>
+          )}
           <Link className="btn ghost" href={`/juegos/${game.id}`}>
             SALIR
           </Link>
@@ -263,6 +286,7 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
           <span>CARGA · 100 %</span>
         </div>
       </div>
+      <TouchPad layout={TOUCH_LAYOUT} keysRef={keysRef} justPressedRef={justPressedRef} />
     </div>
   );
 };
