@@ -1,12 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { signOut } from '../actions/auth';
+import { useSessionProfile } from '../lib/auth/use-session-profile';
 
 const Nav = () => {
   const [open, setOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { session, refresh } = useSessionProfile();
 
   const isHome = pathname === '/';
   // Game routes keep "Biblioteca" lit, matching the prototype.
@@ -16,6 +21,36 @@ const Nav = () => {
   const isAuth = pathname.startsWith('/auth');
 
   const close = () => setOpen(false);
+
+  const onSignOut = async () => {
+    setSigningOut(true);
+    const result = await signOut();
+    setSigningOut(false);
+    if (!result.ok) return;
+    close();
+    await refresh();
+    router.push('/');
+    router.refresh();
+  };
+
+  const signOutButton = (className: string) => (
+    <button className={className} type="button" onClick={onSignOut} disabled={signingOut}>
+      {signingOut ? 'SALIENDO…' : 'Salir'}
+    </button>
+  );
+
+  // Users without a username (fresh OAuth accounts) get a way back to /auth/alias.
+  const userTag = (onClick?: () => void) =>
+    session.status === 'user' &&
+    (session.username ? (
+      <span className="nav-user neon-cyan" title="Tu usuario">
+        {session.username}
+      </span>
+    ) : (
+      <Link className="nav-user pending" href="/auth/alias" onClick={onClick}>
+        Elige alias
+      </Link>
+    ));
 
   return (
     <>
@@ -45,9 +80,23 @@ const Nav = () => {
           <span className="coin" />
           <span>CRÉDITOS · 03</span>
         </div>
-        <Link className="btn auth-btn" href="/auth">
-          Iniciar Sesión
-        </Link>
+        {session.status === 'loading' && (
+          // Same footprint as the button, so the bar does not jump once the session resolves.
+          <span className="btn auth-btn auth-placeholder" aria-hidden="true">
+            Iniciar Sesión
+          </span>
+        )}
+        {session.status === 'guest' && (
+          <Link className="btn auth-btn" href="/auth">
+            Iniciar Sesión
+          </Link>
+        )}
+        {session.status === 'user' && (
+          <div className="nav-session">
+            {userTag()}
+            {signOutButton('btn ghost auth-btn')}
+          </div>
+        )}
         <button className="btn ghost hamburger" onClick={() => setOpen(true)} aria-label="Menú">
           ≡
         </button>
@@ -70,9 +119,17 @@ const Nav = () => {
         <Link className={isAbout ? 'active' : ''} href="/acerca-de" onClick={close}>
           Acerca de
         </Link>
-        <Link className={isAuth ? 'active' : ''} href="/auth" onClick={close}>
-          Iniciar Sesión
-        </Link>
+        {session.status === 'guest' && (
+          <Link className={isAuth ? 'active' : ''} href="/auth" onClick={close}>
+            Iniciar Sesión
+          </Link>
+        )}
+        {session.status === 'user' && (
+          <div className="panel-session">
+            {userTag(close)}
+            {signOutButton('btn ghost')}
+          </div>
+        )}
         <div style={{ flex: 1 }} />
         <div
           className="pixel"

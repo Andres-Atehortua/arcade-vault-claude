@@ -294,6 +294,37 @@ a {
 .av-nav .auth-btn {
   margin-left: 16px;
 }
+.av-nav .auth-placeholder {
+  visibility: hidden;
+}
+.av-nav .nav-session {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 16px;
+}
+.av-nav .nav-session .auth-btn {
+  margin-left: 0;
+}
+.nav-user {
+  font-family: var(--pixel);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.nav-user.pending {
+  color: var(--yellow);
+  text-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
+  text-decoration: none;
+}
+.panel-session {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
 /* Fixed size: the "≡" glyph is missing from the pixel font, so its width
    depends on whichever fallback font resolves. */
 .av-nav .hamburger {
@@ -326,6 +357,13 @@ a {
   .av-nav .auth-btn {
     margin-left: 0;
     padding: 12px 14px;
+  }
+  /* The username moves to the side panel; only "Salir" stays in the bar. */
+  .av-nav .nav-session {
+    margin-left: 0;
+  }
+  .av-nav .nav-session .nav-user {
+    display: none;
   }
 }
 
@@ -1773,6 +1811,160 @@ a {
   padding: 12px;
   font-size: 9px;
 }
+
+/* Auth feedback: invalid fields burn magenta, the same accent as save-score errors. */
+.field input[aria-invalid='true'] {
+  border-color: var(--magenta);
+  box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+}
+.field-error {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--magenta);
+}
+.field-hint {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.auth-alert {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 0, 110, 0.45);
+  border-left-width: 3px;
+  background: rgba(255, 0, 110, 0.06);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+}
+.auth-copy {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  text-align: center;
+}
+.auth-copy strong {
+  color: var(--cyan);
+  font-weight: 500;
+  word-break: break-all;
+}
+.auth-copy.dim {
+  font-size: 11px;
+  color: var(--ink-dim);
+}
+.auth-link {
+  align-self: flex-end;
+  padding: 2px 0;
+  background: none;
+  border: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.auth-link:hover {
+  color: var(--cyan);
+}
+
+/* Password meter: five cells that fill like an arcade energy bar, one per rule. */
+.pw-check {
+  margin-top: 4px;
+}
+.pw-meter {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.pw-meter span {
+  height: 6px;
+  background: var(--line-2);
+  border: 1px solid var(--line);
+  transition:
+    background-color 160ms,
+    box-shadow 160ms;
+}
+.pw-meter[data-level='1'] span.on,
+.pw-meter[data-level='2'] span.on {
+  background: var(--magenta);
+  box-shadow: 0 0 6px rgba(255, 0, 110, 0.6);
+}
+.pw-meter[data-level='3'] span.on,
+.pw-meter[data-level='4'] span.on {
+  background: var(--yellow);
+  box-shadow: 0 0 6px rgba(245, 255, 0, 0.5);
+}
+.pw-meter[data-level='5'] span.on {
+  background: var(--green);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+.pw-check ul {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pw-check li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  transition: color 160ms;
+}
+.pw-check li.met {
+  color: var(--green);
+}
+.pw-tick {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentColor;
+}
+.pw-check li.met .pw-tick {
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* Email-sent state: a pixel envelope instead of the vault mark. */
+.mail-mark {
+  width: 64px;
+  height: 44px;
+  margin: 0 auto 14px;
+  border: 2px solid var(--cyan);
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 1px), var(--cyan) 50%, transparent calc(50% + 1px)) left / 50% 100% no-repeat,
+    linear-gradient(to bottom left, transparent calc(50% - 1px), var(--cyan) 50%, transparent calc(50% + 1px)) right / 50% 100% no-repeat;
+  box-shadow: 0 0 14px rgba(0, 245, 255, 0.45);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 380px) {
+  .pw-check ul {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* ===== salón ===== */
 .av-hall {
