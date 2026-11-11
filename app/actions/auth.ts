@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { AuthError } from '@supabase/supabase-js';
 import { createClient } from '../lib/supabase/server';
+import { checkRateLimit } from '../lib/security/rate-limit';
 import { DEFAULT_NEXT, USERNAME_REGEX, isStrongPassword, normalizeUsername, safeNext } from '../lib/auth/validation';
 
 export type AuthField = 'username' | 'email' | 'password' | 'confirm';
@@ -54,6 +55,9 @@ const getOrigin = async () => {
 const isRateLimited = (error: AuthError) => error.code === 'over_email_send_rate_limit' || error.code === 'over_request_rate_limit';
 
 export const signUp = async (payload: SignUpPayload): Promise<AuthResult> => {
+  const limited = await checkRateLimit('sign_up');
+  if (limited) return { ok: false, error: limited };
+
   const username = normalizeUsername(payload.username);
   const email = payload.email.trim();
 
@@ -101,6 +105,9 @@ export const signUp = async (payload: SignUpPayload): Promise<AuthResult> => {
  * to safeNext(next).
  */
 export const signIn = async (payload: SignInPayload): Promise<AuthResult> => {
+  const limited = await checkRateLimit('sign_in');
+  if (limited) return { ok: false, error: limited };
+
   const email = payload.email.trim();
 
   if (!EMAIL_REGEX.test(email)) return { ok: false, error: MESSAGES.email, field: 'email' };
@@ -135,6 +142,9 @@ export interface UpdatePasswordPayload {
  * account exists, so the form cannot be used to probe for accounts.
  */
 export const requestPasswordReset = async (rawEmail: string): Promise<AuthResult> => {
+  const limited = await checkRateLimit('password_reset');
+  if (limited) return { ok: false, error: limited };
+
   const email = rawEmail.trim();
 
   if (!EMAIL_REGEX.test(email)) return { ok: false, error: MESSAGES.email, field: 'email' };
@@ -152,6 +162,9 @@ export const requestPasswordReset = async (rawEmail: string): Promise<AuthResult
 
 /** Sets a new password for the session opened by the recovery link. */
 export const updatePassword = async (payload: UpdatePasswordPayload): Promise<AuthResult> => {
+  const limited = await checkRateLimit('update_password');
+  if (limited) return { ok: false, error: limited };
+
   if (!isStrongPassword(payload.password)) return { ok: false, error: MESSAGES.weakPassword, field: 'password' };
   if (payload.password !== payload.confirm) return { ok: false, error: MESSAGES.mismatch, field: 'confirm' };
 
@@ -177,6 +190,9 @@ export type OAuthResult = { ok: true; url: string } | { ok: false; error: string
  * through /auth/callback.
  */
 export const signInWithOAuth = async (provider: OAuthProvider, next: string | null): Promise<OAuthResult> => {
+  const limited = await checkRateLimit('oauth');
+  if (limited) return { ok: false, error: limited };
+
   if (provider !== 'google' && provider !== 'github') return { ok: false, error: MESSAGES.generic };
 
   const supabase = await createClient();
@@ -200,6 +216,9 @@ export const signInWithOAuth = async (provider: OAuthProvider, next: string | nu
  * right after this action got dropped by the router, leaving the user on the form.
  */
 export const setUsername = async (rawUsername: string, next: string | null): Promise<AuthResult> => {
+  const limited = await checkRateLimit('set_username');
+  if (limited) return { ok: false, error: limited };
+
   const username = normalizeUsername(rawUsername);
 
   if (!USERNAME_REGEX.test(username)) return { ok: false, error: MESSAGES.usernameFormat, field: 'username' };

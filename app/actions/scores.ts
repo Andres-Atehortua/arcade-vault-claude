@@ -1,6 +1,7 @@
 'use server';
 
 import { createAdminClient } from '../lib/supabase/admin';
+import { checkRateLimit } from '../lib/security/rate-limit';
 
 export type SaveScoreResult = { ok: true; rank: number } | { ok: false; error: string };
 
@@ -15,6 +16,9 @@ const MAX_SCORE = 10000000;
  * caps the damage. Real anti-cheat is out of scope.
  */
 export const saveScore = async (gameId: string, alias: string, score: number): Promise<SaveScoreResult> => {
+  const limited = await checkRateLimit('save_score');
+  if (limited) return { ok: false, error: limited };
+
   const normalized = alias.trim().toUpperCase();
 
   if (!ALIAS_REGEX.test(normalized)) {

@@ -2,6 +2,8 @@
 
 import { Resend } from 'resend';
 
+import { checkRateLimit } from '../lib/security/rate-limit';
+
 export interface ContactoPayload {
   name: string;
   email: string;
@@ -16,6 +18,9 @@ const DESTINATARIO = 'andres.lopez.ate@gmail.com';
 const REMITENTE = 'onboarding@resend.dev';
 
 export const enviarContacto = async (payload: ContactoPayload): Promise<ContactoResult> => {
+  const limited = await checkRateLimit('contact');
+  if (limited) return { ok: false, error: limited };
+
   const { name, email, message, honeypot } = payload;
 
   if (honeypot) {
