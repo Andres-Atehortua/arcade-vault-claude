@@ -36,3 +36,12 @@ export interface ScoreRow {
 }
 
 export const CATS = ['TODOS', 'ARCADE', 'PUZZLE', 'SHOOTER', 'VERSUS'] as const;
+
+/** A row of public.profiles: one per auth user. */
+export interface ProfileRow {
+  /** Same id as auth.users */
+  id: string;
+  /** Uppercase, e.g. "PX_KAI". Null for OAuth accounts that have not picked one yet. */
+  username: string | null;
+  created_at: string;
+}

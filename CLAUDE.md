@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Arcade Vault: plataforma para jugar online y competir por puntaje (ver README.md). Catálogo y puntajes viven en Supabase; hay 4 juegos jugables con motor propio en canvas (Asteroides, Tetris, Rompebloques, Serpentina), con pad táctil para móvil, landing, biblioteca filtrable, salón de la fama, formulario de contacto por email y un `/auth` aún sin flujo real.
+Arcade Vault: plataforma para jugar online y competir por puntaje (ver README.md). Catálogo y puntajes viven en Supabase; hay 4 juegos jugables con motor propio en canvas (Asteroides, Tetris, Rompebloques, Serpentina), con pad táctil para móvil, landing, biblioteca filtrable, salón de la fama, formulario de contacto por email y autenticación con Supabase Auth (email + contraseña o Google/GitHub).
 
 ## Before writing code
 
@@ -42,8 +42,9 @@ No test runner is configured yet. Node version is pinned via `.nvmrc` (26.5).
 - App Router (`app/`), TypeScript, path alias `@/*` -> project root (see `tsconfig.json`).
 - Styling: Tailwind CSS v4 via `@tailwindcss/postcss` (`postcss.config.mjs`), global styles in `app/globals.css`.
 - Fonts: `next/font/google` (Press Start 2P + JetBrains Mono), wired as CSS variables `--font-press-start` / `--font-jetbrains-mono` in `app/layout.tsx`.
-- Rutas: `/` (landing), `/biblioteca` (catálogo filtrable), `/juegos/[id]` (detalle + leaderboard, con `not-found.tsx`), `/juegos/[id]/jugar` (partida), `/salon` (salón de la fama), `/acerca-de` (contacto), `/auth` (placeholder sin flujo real).
+- Rutas: `/` (landing), `/biblioteca` (catálogo filtrable), `/juegos/[id]` (detalle + leaderboard, con `not-found.tsx`), `/juegos/[id]/jugar` (partida), `/salon` (salón de la fama), `/acerca-de` (contacto), `/auth` (login/registro/recuperar contraseña), `/auth/alias` (elegir `username` tras el primer login OAuth), `/auth/restablecer` (nueva contraseña), y los route handlers `/auth/confirm` (enlaces de correo, `verifyOtp`) y `/auth/callback` (OAuth).
 - Componentes compartidos en `app/components/` (`nav`, `game-card`, `library-filters`, `hall-of-fame`, `empty-scores`, `contact-form`, `reveal`, `home-icons`); helpers en `app/lib/format.ts`. La actividad reciente / top jugadores de la landing es mock estático en `app/data/activity.ts`.
+- Auth (spec 12): Server Actions en `app/actions/auth.ts` (`signUp`, `signIn`, `signOut`, `signInWithOAuth`, `requestPasswordReset`, `updatePassword`, `setUsername`); reglas compartidas cliente/servidor en `app/lib/auth/validation.ts` (`USERNAME_REGEX`, `PASSWORD_RULES`, `safeNext`). Tabla `profiles` (`username` único, nulo hasta elegirlo en OAuth, inmutable una vez puesto) creada por el trigger `on_auth_user_created`. El nav lee la sesión en cliente con `app/lib/auth/use-session-profile.ts`: no leer cookies en `layout.tsx`, volvería dinámicas todas las páginas y rompería el ISR del catálogo. Los puntajes siguen sin ligarse a la cuenta.
 - Data: catálogo (`games`) y puntajes (`scores`) en Supabase Postgres, migraciones versionadas en `supabase/migrations/` (aplicadas vía el MCP de Supabase configurado en `.mcp.json`). Lecturas vía `app/lib/supabase/queries.ts` (`getGames`, `getGameById`, `getScoresByGame`, `getAllScores`) desde Server Components, catálogo con `revalidate = 60`; escrituras (guardar puntaje, contacto) vía Server Actions en `app/actions/` usando el cliente admin (`app/lib/supabase/admin.ts`, solo server-side, nunca importado desde un Client Component).
 - Clientes Supabase: `client.ts` (browser), `server.ts` (RSC/Server Actions), `admin.ts` (service role), tipos en `types.ts`. `proxy.ts` en la raíz refresca la sesión con `@supabase/ssr` en cada request.
 - Juegos: cada juego jugable tiene su motor en canvas y reproductor en `app/lib/games/<juego>/` (`engine.ts` + `player.tsx`, más assets propios como `levels.ts`, `spritesheet.ts` o `sprites.ts`). El mapa `gameId -> player` vive en `app/juegos/[id]/jugar/page.tsx`. Piezas compartidas en `app/lib/games/`:
@@ -61,7 +62,7 @@ No test runner is configured yet. Node version is pinned via `.nvmrc` (26.5).
 
 This project follows spec-driven development using the `/spec` and `/spec-impl` skills (see Skills). Use these (or `/arcade-game-spec` for games) when adding new features rather than implementing ad hoc.
 
-Las specs aprobadas viven en `specs/NN-<slug>.md` (01 MVP visual → 11 Rendimiento de juegos) y cada una se implementó en su propia rama `spec-NN-*` mergeada por PR. Lee la spec más reciente antes de tocar un área ya especificada.
+Las specs aprobadas viven en `specs/NN-<slug>.md` (01 MVP visual → 12 Registro, login y autenticación) y cada una se implementó en su propia rama `spec-NN-*` mergeada por PR. Lee la spec más reciente antes de tocar un área ya especificada.
 
 Referencias en `references/`:
 - `started-games/`: juegos de referencia (HTML/JS/assets) como punto de partida para portar uno nuevo.
