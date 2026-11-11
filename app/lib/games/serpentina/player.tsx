@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import SaveScoreForm from '../save-score-form';
-import TouchPad, { type TouchLayout } from '../touch-pad';
+import TouchPad, { type PadLayout } from '../touch-pad';
 import { useCanFullscreen } from '../use-can-fullscreen';
 import { SerpentinaGame, type GameSnapshot } from './engine';
 
@@ -14,16 +14,14 @@ const HEIGHT = 600;
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyP', 'Escape', 'Space'];
 
-/** Touch pad: a single centred cross; the engine already forbids 180-degree turns. */
-const TOUCH_LAYOUT: TouchLayout = {
-  variant: 'cross',
-  left: [
-    { code: 'ArrowUp', label: '▲', ariaLabel: 'Arriba' },
-    { code: 'ArrowLeft', label: '◀', ariaLabel: 'Izquierda' },
-    { code: 'ArrowRight', label: '▶', ariaLabel: 'Derecha' },
-    { code: 'ArrowDown', label: '▼', ariaLabel: 'Abajo' },
-  ],
-  right: [],
+/** Touch pad: steer on the d-pad (the engine forbids 180-degree turns), restart on A, pause on B. */
+const TOUCH_LAYOUT: PadLayout = {
+  up: { code: 'ArrowUp', hint: 'Arriba' },
+  right: { code: 'ArrowRight', hint: 'Derecha' },
+  down: { code: 'ArrowDown', hint: 'Abajo' },
+  left: { code: 'ArrowLeft', hint: 'Izquierda' },
+  a: { code: 'Space', hint: 'Reiniciar' },
+  b: { code: 'KeyP', hint: 'Pausa' },
 };
 
 const INITIAL_SNAPSHOT: GameSnapshot = {

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from 
 import type { GameRow } from '@/app/lib/supabase/types';
 import { RompebloquesGame, type GameSnapshot } from './engine';
 import SaveScoreForm from '../save-score-form';
+import TouchPad, { type PadLayout } from '../touch-pad';
 import { useCanFullscreen } from '../use-can-fullscreen';
 
 const WIDTH = 800;
@@ -12,6 +13,14 @@ const HEIGHT = 600;
 
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'KeyP', 'Escape'];
+
+/** Touch pad: the paddle also follows a finger dragged on the canvas; A restarts, B pauses. */
+const TOUCH_LAYOUT: PadLayout = {
+  left: { code: 'ArrowLeft', hint: 'Mover a la izquierda' },
+  right: { code: 'ArrowRight', hint: 'Mover a la derecha' },
+  a: { code: 'Space', hint: 'Reiniciar' },
+  b: { code: 'KeyP', hint: 'Pausa' },
+};
 
 const INITIAL_SNAPSHOT: GameSnapshot = {
   score: 0,
@@ -229,6 +238,7 @@ const RompebloquesPlayer = ({ game }: { game: GameRow }) => {
           <span>CARGA · 100 %</span>
         </div>
       </div>
+      <TouchPad layout={TOUCH_LAYOUT} keysRef={keysRef} justPressedRef={justPressedRef} />
     </div>
   );
 };
