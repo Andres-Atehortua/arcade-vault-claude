@@ -3618,3 +3618,92 @@ a {
   line-height: 1.6;
   margin: 0 0 20px;
 }
+
+/* ===== PERF METER (?debug=perf) ===== */
+/* Arcade "service mode" readout for spec 11. Pinned to a viewport corner, never over the
+   canvas, and transparent to clicks and taps. Only mounted with ?debug=perf. */
+.perf-meter {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 90;
+  min-width: 148px;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink);
+  background: rgba(10, 10, 15, 0.92);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--green);
+  pointer-events: none;
+}
+.perf-meter-title {
+  font-family: var(--pixel);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.perf-meter dl {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+.perf-meter dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.perf-meter dt {
+  color: var(--ink-dim);
+}
+.perf-meter dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.perf-meter [data-level='ok'] dd {
+  color: var(--green);
+}
+.perf-meter [data-level='warn'] dd {
+  color: var(--yellow);
+}
+.perf-meter [data-level='bad'] dd {
+  color: var(--magenta);
+}
+.perf-meter-foot {
+  margin-top: 6px;
+  color: var(--ink-faint);
+}
+/* Touch devices: the pad owns the bottom of the screen, so move to the top corner. */
+@media (pointer: coarse) {
+  .perf-meter {
+    top: 12px;
+    bottom: auto;
+  }
+}
+
+/* ===== SPEC 11: static chrome around the game canvas ===== */
+/* While a player is mounted the canvas must be the only thing repainting every frame.
+   Scoped with body:has(.av-player) (same pattern as spec 10), so every other route keeps
+   its animated background. Where :has() is unsupported nothing changes and the game still
+   works as before. */
+
+/* The floor grid stops scrolling: it repainted a large perspective + mask layer per frame. */
+body:has(.av-player) .av-bg::before {
+  animation: none;
+}
+
+/* Opaque nav instead of backdrop-filter. Colors sampled from the blurred original over
+   the /jugar background (rgb 12,10,15 at the top to 13,10,16 at the bottom). */
+body:has(.av-player) .av-nav {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: linear-gradient(180deg, #0c0a0f, #0d0a10);
+}
+
+/* Black stripes at 18 % alpha: multiply and normal blending give the same pixels
+   (C * (1 - 0.18)), but multiply forces a blend group over the live canvas. */
+body:has(.av-player) .crt-screen::after {
+  mix-blend-mode: normal;
+}

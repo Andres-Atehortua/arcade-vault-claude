@@ -93,6 +93,8 @@ export class RompebloquesGame {
   private ready = false;
   private bounceSound: HTMLAudioElement;
   private breakSound: HTMLAudioElement;
+  /** Phase the canvas showed after the last draw(); null forces the next frame to paint. */
+  private drawnPhase: GamePhase | null = null;
 
   constructor(
     private ctx: CanvasRenderingContext2D,
@@ -120,6 +122,8 @@ export class RompebloquesGame {
     const scaleX = this.w / canvasRect.width;
     const x = (clientX - canvasRect.left) * scaleX;
     this.paddle.x = clamp(x - this.paddle.w / 2, 0, this.w - this.paddle.w);
+    // The paddle also follows the pointer under a pause / game over overlay: repaint it.
+    this.drawnPhase = null;
   }
 
   pause() {
@@ -150,6 +154,12 @@ export class RompebloquesGame {
       level: this.level,
       phase: this.phase,
     };
+  }
+
+  /** false only while a static pause / game over / win frame is already on the canvas. */
+  needsRedraw() {
+    if (this.phase !== 'paused' && this.phase !== 'gameover' && this.phase !== 'win') return true;
+    return this.drawnPhase !== this.phase;
   }
 
   update(dt: number) {
@@ -234,7 +244,12 @@ export class RompebloquesGame {
     ctx.fillStyle = '#05050c';
     ctx.fillRect(0, 0, this.w, this.h);
 
-    if (!this.ready) return;
+    // Sprites still loading: the frame is blank, so keep painting until they arrive.
+    if (!this.ready) {
+      this.drawnPhase = null;
+      return;
+    }
+    this.drawnPhase = this.phase;
 
     for (const block of this.blocks) {
       if (block.alive) this.spritesheet.drawSprite(ctx, `block_${block.color}`, block.x, block.y, block.w, block.h);

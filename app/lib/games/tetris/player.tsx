@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
+import PerfMeter from '../perf-meter';
 import SaveScoreForm from '../save-score-form';
 import TouchPad, { type PadLayout } from '../touch-pad';
 import { useCanFullscreen } from '../use-can-fullscreen';
+import { useGameLoop } from '../use-game-loop';
 import { PIECE_COLORS, PIECE_SHAPES, TetrisGame, type GameSnapshot } from './engine';
 
 const WIDTH = 300;
@@ -53,10 +55,10 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
   const previewRef = useRef<HTMLCanvasElement>(null);
   const crtRef = useRef<HTMLDivElement>(null);
   const fullscreenToggleRef = useRef<(() => void) | null>(null);
-  const gameRef = useRef<TetrisGame | null>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const justPressedRef = useRef<Record<string, boolean>>({});
-  const [snapshot, setSnapshot] = useState<GameSnapshot>(INITIAL_SNAPSHOT);
+  const [engine, setEngine] = useState<TetrisGame | null>(null);
+  const snapshot = useGameLoop({ engine, sameSnapshot, initialSnapshot: INITIAL_SNAPSHOT });
   const [isFullscreen, setIsFullscreen] = useState(false);
   // iOS Safari has no Fullscreen API, so the PANTALLA button is hidden there.
   const canFullscreen = useCanFullscreen();
@@ -77,7 +79,8 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
 
     const instance = new TetrisGame(ctx, WIDTH, HEIGHT);
     instance.handleInput(keys, consume);
-    gameRef.current = instance;
+    // The canvas context only exists after mount, so the engine reaches useGameLoop here.
+    setEngine(instance);
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (isTyping(event) || !GAME_KEYS.includes(event.code)) return;
@@ -94,32 +97,10 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
 
-    let frame = 0;
-    let lastTime: number | null = null;
-    let lastSnapshot = instance.getSnapshot();
-
-    const loop = (ts: number) => {
-      const dt = lastTime === null ? 0 : Math.min((ts - lastTime) / 1000, 0.05);
-      lastTime = ts;
-      instance.update(dt);
-      instance.draw();
-
-      // Push to React only when a HUD value actually changed, not every frame.
-      const next = instance.getSnapshot();
-      if (!sameSnapshot(next, lastSnapshot)) {
-        lastSnapshot = next;
-        setSnapshot(next);
-      }
-
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-
     return () => {
-      cancelAnimationFrame(frame);
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
-      gameRef.current = null;
+      setEngine(null);
     };
   }, []);
 
@@ -201,29 +182,23 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
   const isGameOver = snapshot.phase === 'gameover';
 
   // Blur after clicking so a later Space drops the piece instead of pressing the button again.
+  // The HUD follows on the next frame: useGameLoop picks the new snapshot up.
   const togglePause = (event: MouseEvent<HTMLButtonElement>) => {
     event.currentTarget.blur();
-    const instance = gameRef.current;
-    if (!instance) return;
-    if (instance.getSnapshot().phase === 'paused') instance.resume();
-    else instance.pause();
-    setSnapshot(instance.getSnapshot());
+    if (!engine) return;
+    if (engine.getSnapshot().phase === 'paused') engine.resume();
+    else engine.pause();
   };
 
   const forceEnd = (event: MouseEvent<HTMLButtonElement>) => {
     event.currentTarget.blur();
-    const instance = gameRef.current;
-    if (!instance) return;
-    instance.end();
-    setSnapshot(instance.getSnapshot());
+    engine?.end();
   };
 
   /** Tap or click on the canvas restarts, mirroring the Space shortcut on touch devices. */
   const restartOnTap = () => {
-    const instance = gameRef.current;
-    if (!instance || instance.getSnapshot().phase !== 'gameover') return;
-    instance.restart();
-    setSnapshot(instance.getSnapshot());
+    if (!engine || engine.getSnapshot().phase !== 'gameover') return;
+    engine.restart();
   };
 
   return (
@@ -283,6 +258,7 @@ const TetrisPlayer = ({ game }: { game: GameRow }) => {
         </div>
       </div>
       <TouchPad layout={TOUCH_LAYOUT} keysRef={keysRef} justPressedRef={justPressedRef} />
+      <PerfMeter />
     </div>
   );
 };
