@@ -45,3 +45,15 @@ export interface ProfileRow {
   username: string | null;
   created_at: string;
 }
+
+/** A row of public.rate_limits (spec 13). Only reachable with the service role. */
+export interface RateLimitRow {
+  /** Client IP, or 'unknown' when it cannot be determined */
+  key: string;
+  /** One of RateLimitAction (app/lib/security/rate-limit.ts) */
+  action: string;
+  /** ISO 8601: start of the current fixed window */
+  window_start: string;
+  /** Hits within the current window */
+  count: number;
+}
