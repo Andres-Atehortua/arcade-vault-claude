@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import { AsteroidsGame, type GameSnapshot } from './engine';
 import SaveScoreForm from '../save-score-form';
-import TouchPad, { type TouchLayout } from '../touch-pad';
+import TouchPad, { type PadLayout } from '../touch-pad';
 import { useCanFullscreen } from '../use-can-fullscreen';
 
 const WIDTH = 800;
@@ -14,17 +14,16 @@ const HEIGHT = 600;
 /** Keys the game owns: their default scrolling is suppressed while mounted. */
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'Space'];
 
-/** Touch pad: rotate on the left thumb, thrust + fire on the right; held together via multitouch. */
-const TOUCH_LAYOUT: TouchLayout = {
-  variant: 'row',
-  left: [
-    { code: 'ArrowLeft', label: '◀', ariaLabel: 'Girar a la izquierda' },
-    { code: 'ArrowRight', label: '▶', ariaLabel: 'Girar a la derecha' },
-  ],
-  right: [
-    { code: 'ArrowUp', label: '▲', ariaLabel: 'Propulsar' },
-    { code: 'Space', label: '●', ariaLabel: 'Disparar', size: 'lg' },
-  ],
+/**
+ * Touch pad: rotate on the d-pad, fire on A. Thrust lives on both ▲ and B so the right
+ * thumb can thrust + fire while the left one rotates.
+ */
+const TOUCH_LAYOUT: PadLayout = {
+  left: { code: 'ArrowLeft', hint: 'Girar a la izquierda' },
+  right: { code: 'ArrowRight', hint: 'Girar a la derecha' },
+  up: { code: 'ArrowUp', hint: 'Propulsar' },
+  a: { code: 'Space', hint: 'Disparar' },
+  b: { code: 'ArrowUp', hint: 'Propulsar' },
 };
 
 const INITIAL_SNAPSHOT: GameSnapshot = {

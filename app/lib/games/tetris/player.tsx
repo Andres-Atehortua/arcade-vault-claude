@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import type { GameRow } from '@/app/lib/supabase/types';
 import SaveScoreForm from '../save-score-form';
-import TouchPad, { type TouchLayout } from '../touch-pad';
+import TouchPad, { type PadLayout } from '../touch-pad';
 import { useCanFullscreen } from '../use-can-fullscreen';
 import { PIECE_COLORS, PIECE_SHAPES, TetrisGame, type GameSnapshot } from './engine';
 
@@ -19,20 +19,16 @@ const PREVIEW_SIZE = PREVIEW_CELL * 4;
 const GAME_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'KeyX', 'KeyP'];
 
 /**
- * Touch pad: move + soft drop on the left, rotate + hard drop on the right. The movement
- * buttons only hold their key; the engine derives auto-repeat from it (`repeats`).
+ * Touch pad: move + soft drop on the d-pad, rotate on ▲ or B, hard drop on A. The pad only
+ * holds keys; the engine derives auto-repeat from them (`repeats`).
  */
-const TOUCH_LAYOUT: TouchLayout = {
-  variant: 'row',
-  left: [
-    { code: 'ArrowLeft', label: '◀', ariaLabel: 'Mover a la izquierda', repeat: true },
-    { code: 'ArrowRight', label: '▶', ariaLabel: 'Mover a la derecha', repeat: true },
-    { code: 'ArrowDown', label: '▼', ariaLabel: 'Bajar', repeat: true },
-  ],
-  right: [
-    { code: 'ArrowUp', label: '⟳', ariaLabel: 'Rotar' },
-    { code: 'Space', label: '⤓', ariaLabel: 'Caída instantánea', size: 'lg' },
-  ],
+const TOUCH_LAYOUT: PadLayout = {
+  left: { code: 'ArrowLeft', hint: 'Mover a la izquierda' },
+  right: { code: 'ArrowRight', hint: 'Mover a la derecha' },
+  down: { code: 'ArrowDown', hint: 'Bajar' },
+  up: { code: 'ArrowUp', hint: 'Rotar' },
+  a: { code: 'Space', hint: 'Soltar' },
+  b: { code: 'KeyX', hint: 'Rotar' },
 };
 
 const INITIAL_SNAPSHOT: GameSnapshot = {

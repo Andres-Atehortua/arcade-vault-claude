@@ -2095,110 +2095,272 @@ a {
 }
 
 /* ===== ARCADE TOUCH CONTROLS ===== */
-/* On-screen pad in its own band under the .crt, never over the canvas. Only touch-first
-   devices get it: a narrow desktop window with a mouse keeps the keyboard-only layout. */
+/* Neon gamepad (references/gamepad-assets) in its own band under the .crt, never over the
+   canvas. Only touch-first devices get it: a narrow desktop window with a mouse keeps the
+   keyboard-only layout. */
 .touch-pad {
   display: none;
 }
 @media (pointer: coarse) {
   /* Reserve the pad's height so the CRT shrinks instead of pushing the pad off-screen. */
-  .av-player:has(.touch-pad.row) {
-    --touch-pad-h: 104px;
-  }
-  .av-player:has(.touch-pad.cross) {
+  .av-player:has(.touch-pad) {
     --touch-pad-h: 184px;
   }
   .touch-pad {
+    --dp: clamp(40px, 11.5vw, 46px);
+    --ab: clamp(56px, 16vw, 64px);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     max-width: 560px;
     margin: 12px auto 0;
-    padding: 0 4px;
+    padding: 12px clamp(14px, 5vw, 28px);
+    background: linear-gradient(180deg, #1c1c28 0%, #0c0c14 100%);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow:
+      0 24px 60px -30px rgba(0, 245, 255, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.02),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.6);
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
   }
-  .touch-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .touch-pad::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(0, 245, 255, 0.14);
+    border-radius: 12px;
+    pointer-events: none;
   }
-  .touch-pad.cross {
-    justify-content: center;
+  .touch-pad::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 8px 8px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.6;
   }
-  /* 4-direction cross: buttons placed by the key they send, whatever their order. */
-  .touch-pad.cross .touch-group.left {
+
+  /* D-pad: one touch surface (the thumb rolls between directions); arrows only show state. */
+  .gp-dpad {
+    position: relative;
+    z-index: 1;
     display: grid;
-    grid-template-columns: repeat(3, 56px);
-    grid-template-rows: repeat(3, 56px);
+    grid-template-columns: repeat(3, var(--dp));
+    grid-template-rows: repeat(3, var(--dp));
     grid-template-areas:
       '. up .'
-      'left . right'
+      'left hub right'
       '. down .';
-    gap: 4px;
+    gap: 3px;
+    touch-action: none;
   }
-  .touch-pad.cross .touch-btn {
-    width: 56px;
-    height: 56px;
-  }
-  .touch-pad.cross [data-code='ArrowUp'] {
-    grid-area: up;
-  }
-  .touch-pad.cross [data-code='ArrowLeft'] {
-    grid-area: left;
-  }
-  .touch-pad.cross [data-code='ArrowRight'] {
-    grid-area: right;
-  }
-  .touch-pad.cross [data-code='ArrowDown'] {
-    grid-area: down;
-  }
-  .touch-btn {
-    display: inline-flex;
+  .dp {
+    display: flex;
     align-items: center;
     justify-content: center;
-    /* Shrinks on 360px phones so five buttons (Tetris) still fit in one row. */
-    width: clamp(46px, 14vw, 56px);
-    height: clamp(46px, 14vw, 56px);
-    padding: 0;
-    border: 1px solid var(--cyan);
-    border-radius: 14px;
-    background: rgba(0, 245, 255, 0.06);
+    background: linear-gradient(180deg, #1a1a25, #0a0a12);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 9px;
+    color: var(--ink-dim);
+    pointer-events: none;
+    box-shadow:
+      0 4px 0 #050507,
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+    transition:
+      transform 80ms,
+      box-shadow 140ms,
+      color 140ms,
+      border-color 140ms,
+      background 140ms;
+  }
+  .dp-up {
+    grid-area: up;
+  }
+  .dp-right {
+    grid-area: right;
+  }
+  .dp-down {
+    grid-area: down;
+  }
+  .dp-left {
+    grid-area: left;
+  }
+  .dp .dp-arrow {
+    width: 20px;
+    height: 20px;
+    transition: filter 140ms;
+  }
+  .dp.off {
+    color: var(--ink-faint);
+    opacity: 0.45;
+  }
+  .dp.on {
+    transform: translateY(3px);
     color: var(--cyan);
-    font-family: var(--pixel);
-    font-size: 18px;
-    line-height: 1;
-    text-shadow: 0 0 6px rgba(0, 245, 255, 0.6);
-    box-shadow: inset 0 0 12px rgba(0, 245, 255, 0.12);
+    background: linear-gradient(180deg, #08161e, #030a0e);
+    border-color: var(--cyan);
+    box-shadow:
+      0 1px 0 #050507,
+      inset 0 0 16px rgba(0, 245, 255, 0.45),
+      0 0 16px rgba(0, 245, 255, 0.5);
+  }
+  .dp.on .dp-arrow {
+    filter: drop-shadow(0 0 6px var(--cyan)) drop-shadow(0 0 12px var(--cyan));
+  }
+  .dp-hub {
+    grid-area: hub;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #181822 0%, #08080d 80%);
+    border: 1px solid rgba(0, 245, 255, 0.15);
+    border-radius: 6px;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 12px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .dp-hub-gem {
+    width: 12px;
+    height: 12px;
+    background: var(--cyan);
+    box-shadow:
+      0 0 10px var(--cyan),
+      inset 0 0 4px rgba(0, 0, 0, 0.5);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    animation: pad-led 2s ease-in-out infinite;
+  }
+  @keyframes pad-led {
+    50% {
+      opacity: 0.35;
+      transform: scale(0.85);
+    }
+  }
+
+  /* A / B: B sits lower-left of A, like the reference's thumb arc. */
+  .gp-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(12px, 4vw, 20px);
+  }
+  .gp-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .gp-action:first-child {
+    margin-top: 18px;
+  }
+  .ab {
+    position: relative;
+    width: var(--ab);
+    height: var(--ab);
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.25), transparent 50%),
+      radial-gradient(circle at 50% 55%, var(--ab-mid), var(--ab-deep) 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 6px 0 #050507,
+      0 0 22px var(--ab-glow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -4px 8px rgba(0, 0, 0, 0.4);
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     transition:
-      transform 60ms ease,
-      background 60ms ease;
+      transform 80ms,
+      box-shadow 140ms;
   }
-  .touch-btn.lg {
-    width: clamp(64px, 20vw, 80px);
-    height: clamp(64px, 20vw, 80px);
-    border-radius: 50%;
-    border-color: var(--magenta);
-    background: rgba(255, 0, 110, 0.08);
+  .ab.a {
     color: var(--magenta);
-    font-size: 22px;
-    text-shadow: 0 0 6px rgba(255, 0, 110, 0.6);
-    box-shadow: inset 0 0 14px rgba(255, 0, 110, 0.18);
+    --ab-mid: rgba(255, 0, 110, 0.7);
+    --ab-deep: rgba(110, 0, 40, 0.95);
+    --ab-glow: rgba(255, 0, 110, 0.4);
   }
-  .touch-btn.is-pressed {
-    transform: scale(0.94);
-    background: rgba(0, 245, 255, 0.22);
+  .ab.b {
+    color: var(--cyan);
+    --ab-mid: rgba(0, 200, 230, 0.7);
+    --ab-deep: rgba(0, 50, 70, 0.95);
+    --ab-glow: rgba(0, 245, 255, 0.4);
   }
-  .touch-btn.lg.is-pressed {
-    background: rgba(255, 0, 110, 0.3);
+  .ab .ab-letter {
+    position: relative;
+    z-index: 2;
+    font-family: var(--pixel);
+    font-size: 20px;
+    color: #fff;
+    text-shadow:
+      0 0 8px currentColor,
+      0 0 18px currentColor,
+      0 1px 0 rgba(0, 0, 0, 0.6);
+  }
+  .ab.a .ab-letter {
+    text-shadow:
+      0 0 8px var(--magenta),
+      0 0 18px var(--magenta),
+      0 1px 0 rgba(0, 0, 0, 0.6);
+  }
+  .ab.b .ab-letter {
+    text-shadow:
+      0 0 8px var(--cyan),
+      0 0 18px var(--cyan),
+      0 1px 0 rgba(0, 0, 0, 0.6);
+  }
+  .ab .ab-ring {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px dashed currentColor;
+    opacity: 0;
+    transition:
+      opacity 140ms,
+      transform 200ms;
+  }
+  .ab.on {
+    transform: translateY(4px) scale(0.97);
+    box-shadow:
+      0 1px 0 #050507,
+      0 0 36px var(--ab-glow),
+      inset 0 0 18px rgba(0, 0, 0, 0.5);
+  }
+  .ab.on .ab-ring {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  .ab.off {
+    opacity: 0.3;
+    box-shadow: 0 6px 0 #050507;
+  }
+  /* What the button does in this game: the mapping changes per title. */
+  .ab-hint {
+    max-width: calc(var(--ab) + 16px);
+    font-family: var(--pixel);
+    font-size: 7px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--ink-dim);
   }
 }
 
