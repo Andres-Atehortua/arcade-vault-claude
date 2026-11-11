@@ -170,6 +170,8 @@ export class TetrisGame {
   private block: number;
   private keys: Record<string, boolean> = {};
   private justPressed: (code: string) => boolean = () => false;
+  /** Phase the canvas showed after the last draw(); null forces the next frame to paint. */
+  private drawnPhase: GamePhase | null = null;
 
   constructor(
     private ctx: CanvasRenderingContext2D,
@@ -218,6 +220,12 @@ export class TetrisGame {
     };
   }
 
+  /** false only while a static pause / game over frame is already on the canvas. */
+  needsRedraw() {
+    if (this.phase !== 'paused' && this.phase !== 'gameover') return true;
+    return this.drawnPhase !== this.phase;
+  }
+
   /** `dt` in seconds; the ms the original's drop timer speaks are converted here, once. */
   update(dt: number) {
     if (this.justPressed('KeyP')) {
@@ -262,6 +270,7 @@ export class TetrisGame {
 
     if (this.phase === 'gameover') this.drawOverlay('GAME OVER', `PUNTAJE: ${this.score}`, 'ESPACIO / TOCA PARA REINICIAR');
     else if (this.phase === 'paused') this.drawOverlay('PAUSADO', '', 'PULSA REANUDAR PARA CONTINUAR');
+    this.drawnPhase = this.phase;
   }
 
   // ── Internals ───────────────────────────────────────────────────────────────

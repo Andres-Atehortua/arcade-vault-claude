@@ -12,8 +12,13 @@
  * `GameSnapshot` drops `lives`/`level` (no notion of either in an endless
  * Snake) and adds `length`, same deviation from the base contract that
  * Tetris already made.
+ *
+ * SPEC 11: the segment glow is pre-rendered once (see `glow-cache.ts`) and stamped with
+ * `drawImage`, instead of a live `shadowBlur` on every segment every frame. Only the
+ * static overlays keep `shadowBlur`.
  */
 
+import { createGlowCache, drawGlowSprite, getGlowSprite, type GlowCache } from '../glow-cache';
 import { FRUIT_NAMES, ImageFruitSpritesheet, type FruitName } from './sprites';
 
 export type GamePhase = 'playing' | 'paused' | 'gameover';
@@ -48,6 +53,15 @@ const POINTS_PER_FOOD = 10;
 const GREEN = '#39ff6a';
 const YELLOW = '#f5ff00';
 
+/** Segment body: the cell minus a 1 px gutter on each side. */
+const SEGMENT_SIZE = CELL - 2;
+const SEGMENT_GLOW = 8;
+
+const paintSegment = (ctx: CanvasRenderingContext2D) => {
+  ctx.fillStyle = GREEN;
+  ctx.fillRect(-SEGMENT_SIZE / 2, -SEGMENT_SIZE / 2, SEGMENT_SIZE, SEGMENT_SIZE);
+};
+
 const DIRECTION_VECTOR: Record<Direction, { col: number; row: number }> = {
   up: { col: 0, row: -1 },
   down: { col: 0, row: 1 },
@@ -78,12 +92,18 @@ export class SerpentinaGame {
   private justPressed: (code: string) => boolean = () => false;
   private spritesheet: ImageFruitSpritesheet;
   private ready = false;
+  /** Phase the canvas showed after the last draw(); null forces the next frame to paint. */
+  private drawnPhase: GamePhase | null = null;
+  private glowCache: GlowCache;
+  /** Every segment looks the same, so one sprite serves the whole snake. */
+  private segmentSprite: HTMLCanvasElement | null = null;
 
   constructor(
     private ctx: CanvasRenderingContext2D,
     private w: number,
     private h: number,
   ) {
+    this.glowCache = createGlowCache();
     this.spritesheet = new ImageFruitSpritesheet();
     this.spritesheet.load(() => {
       this.ready = true;
@@ -127,6 +147,12 @@ export class SerpentinaGame {
     };
   }
 
+  /** false only while a static pause / game over frame is already on the canvas. */
+  needsRedraw() {
+    if (this.phase !== 'paused' && this.phase !== 'gameover') return true;
+    return this.drawnPhase !== this.phase;
+  }
+
   update(dt: number) {
     if (this.justPressed('KeyP') || this.justPressed('Escape')) {
       if (this.phase === 'paused') this.resume();
@@ -155,17 +181,20 @@ export class SerpentinaGame {
     ctx.fillStyle = '#05050c';
     ctx.fillRect(0, 0, this.w, this.h);
 
-    if (!this.ready) return;
+    // Sprites still loading: the frame is blank, so keep painting until they arrive.
+    if (!this.ready) {
+      this.drawnPhase = null;
+      return;
+    }
+    this.drawnPhase = this.phase;
 
     this.spritesheet.drawFruit(ctx, this.food.fruit, this.food.col * CELL, this.food.row * CELL, CELL, CELL);
 
-    ctx.fillStyle = GREEN;
-    ctx.shadowColor = GREEN;
-    ctx.shadowBlur = 8;
+    const sprite = (this.segmentSprite ??= getGlowSprite(this.glowCache, 'segment', GREEN, SEGMENT_GLOW, SEGMENT_SIZE / 2, paintSegment));
+    const half = CELL / 2;
     for (const segment of this.snake) {
-      ctx.fillRect(segment.col * CELL + 1, segment.row * CELL + 1, CELL - 2, CELL - 2);
+      drawGlowSprite(ctx, sprite, segment.col * CELL + half, segment.row * CELL + half);
     }
-    ctx.shadowBlur = 0;
 
     if (this.phase === 'gameover') {
       this.drawOverlay('GAME OVER', `PUNTAJE: ${this.score}`, 'ESPACIO / TOCA PARA REINICIAR');
